@@ -22,9 +22,25 @@ Partial Class Form1
     'No lo modifique con el editor de código.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New System.ComponentModel.Container()
+        Me.components = New System.ComponentModel.Container()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.SuspendLayout
+        '
+        'Timer1
+        '
+        Me.Timer1.Enabled = true
+        Me.Timer1.Interval = 60000
+        '
+        'Form1
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6!, 13!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Text = "Form1"
-    End Sub
+        Me.ClientSize = New System.Drawing.Size(284, 261)
+        Me.Name = "Form1"
+        Me.Text = "Sistema"
+        Me.ResumeLayout(false)
 
+End Sub
+
+    Friend WithEvents Timer1 As Timer
 End Class

@@ -43,9 +43,27 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MySql.Data.Entity.EF6, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.Entity.6.9.9\lib\net45\MySql.Data.Entity.EF6.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -64,6 +82,342 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="accesos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="administrador_gestion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="alertas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="asociados_cruzadas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="asunto.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="avisos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="banner.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="banner_final.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="botones_gestion_citas_app.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="botones_pedidos_express_app.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="botplus.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="cabinas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="cab_pedidos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="calendario_vacunas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="campanias.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="canjeo_puntos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="categoriasps.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="categoriasps_productos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="categorizacion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="citas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ci_sessions.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="clientes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="clientesps.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="clientes_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="clipboard.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="compras.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="configuracion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="consultas_sql.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="controles_post_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="control_bebe.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="control_consejos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="control_mascota.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="control_niveles.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_compras.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_medicamentos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_premios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_premios_tra.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_productos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_puntos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="copia_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="curso.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dar_regalo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dashboard.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="datos_equipo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dbdisponibles.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="dietassrdosnutricion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="encargos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="encargossf.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="encuentas_anonimas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="encuesta.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="encuestas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="entregas_clientes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="estadisticas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="estetica.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="examen_capilar.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="examen_visual_optometrico.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="exploracion_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="faltas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="familia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="farmacias_guardia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fechasconsultadas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="fechas_farmacias_guardia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="formulas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="frecuencia_citas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="historia_farmacoterapeutica_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="historia_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hojasrdosfacial.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hojasrdosmaquillaje.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hojasrdosnutricion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="homeopatia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="horario_curso.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="hora_apagado.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="incentivos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="incentivos_cualitativos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="incentivos_unidades.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="incentivos_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_acciones.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_backup.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_backup_16122016.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_copy_1.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="informes_mensuales_copy_16122016.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="intervencion_basal_taq.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="laboratorios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_campanias.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_cualitativos_grupo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_cualitativos_individual.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_objetivo_unidades.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_objetivo_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_unidades.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_varios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_incentivos_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_objetivo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_objetivo_comision.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_objetivo_cualitativo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_objetivo_unidades.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_objetivo_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_pedidos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_promociones.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lineas_promociones_imas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="lin_pedidos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="listas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="listas_articulos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="medicamentos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="medicamentos_recamara.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="mensajes_internos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="mensajes_push_app.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="mensajes_servicios_clientes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="meses_vacunas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="municipios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -78,6 +432,303 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="nivel.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="nombres_bebes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="nombres_mascota.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="notificaciones_push_enviadas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="numero.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="nutricionista.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos_comision.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos_cualitativos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos_unidades.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos_varios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivos_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="objetivo_listado_medicamentos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pasosdietasrdosnutricion.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pasosrecomendacionesrdosfacial.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pasosrecomendacionesrdosmaquillaje.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pedidos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pedidos_express.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pendiente_puntos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="pendiente_puntos_old.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="personas_citas_tramos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="personas_citas_tramos_old.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="personas_reservas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="personas_reservas_old.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="plano_farmacia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="posologia.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="preguntas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="programacion_sincronizador.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="promociones.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="protocolos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="protocolos_tramos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="provincias.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_categorias.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_imagenes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_laboratorios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_log.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_movimientos_stock.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ps_rel_imagenes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="publicidad.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="publicidad_audio.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="publicidad_imc.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="publicidad_mas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="publicidad_pantalla.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="puntos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="que_me_tomo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="quien.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="rango_importes_colores.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ranking.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="recargas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="recomendacionesrdosfacial.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="recomendacionesrdosmaquillaje.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="recomendaciones_cruzadas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="regalos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="reproducciones.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="respuestas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="respuestas_usuarios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="resultados_encuesta.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="roles.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="seguimiento_embarazo.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="seguimiento_embarazo_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="seguimiento_embarazo_periodos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_bebe.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas_dias.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas_dias_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas_tramos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_citas_tramos_copy.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_clientes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_clientes_suscritos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_mascota.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="servicios_niveles.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SisFarmaLectorModel.Context.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SisFarmaLectorModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SisFarmaLectorModel.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SisFarmaLectorModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="SisFarmaLectorModel.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sms.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="sms_enviados.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tension.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="test_fagerstrom_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="test_richmond_tab.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tipos_nutriciones.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tipos_vacunas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tipo_consejos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tipo_estados.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tipo_numeros.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tmp_entregas_clientes.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tmp_ventas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="trabajador.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="trabajadores_citas_tramos.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tricogramas_examen_capilar.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tu_salud_app.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usuarios.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="usuario_dashboard.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vacunas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="valores_indicativos_incentivos_cualitativos_individual.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ventas_cruzadas.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="wa_enviados.vb">
+      <DependentUpon>SisFarmaLectorModel.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +751,28 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="packages.config" />
+    <EntityDeploy Include="SisFarmaLectorModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>SisFarmaLectorModel.Designer.vb</LastGenOutput>
+    </EntityDeploy>
+    <None Include="SisFarmaLectorModel.edmx.diagram">
+      <DependentUpon>SisFarmaLectorModel.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SisFarmaLectorModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SisFarmaLectorModel.edmx</DependentUpon>
+      <LastGenOutput>SisFarmaLectorModel.Context.vb</LastGenOutput>
+    </Content>
+    <Content Include="SisFarmaLectorModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>SisFarmaLectorModel.edmx</DependentUpon>
+      <LastGenOutput>SisFarmaLectorModel.vb</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

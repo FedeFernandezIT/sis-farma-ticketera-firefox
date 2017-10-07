@@ -3,6 +3,9 @@
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             Lector.LeerFicherosConfiguracion
+            MessageBox.Show("LeerFicherosConfiguration Success")
+            Lector.ManageKeyLogger(False)
+            Lector.ManageKeyLogger(True)
         Catch ex As Exception
             MessageBox.Show("Un error ha ocurrido.")
         End Try        
@@ -18,8 +21,8 @@
 
     Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
         Try
-            Lector.ManageKeyLogger(False)
-            Lector.ManageKeyLogger(True)
+            'Lector.ManageKeyLogger(False)
+            'Lector.ManageKeyLogger(True)
         Catch ex As Exception
             MessageBox.Show("Un error ha ocurrido. En el Timer")
         End Try        

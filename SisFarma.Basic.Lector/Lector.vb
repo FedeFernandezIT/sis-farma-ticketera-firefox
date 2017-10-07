@@ -57,33 +57,39 @@
 
         Dim fileUrlInformacionRemoto As New IO.StreamReader(URL_INFORMACION_REMOTO)
         URL = fileUrlInformacionRemoto.ReadLine()
+        MessageBox.Show($"URL:{URL}")
 
         If IO.File.Exists(MOSTRADOR_VC) Then
             Dim fileMostradorVc As New IO.StreamReader(MOSTRADOR_VC)
             mostrador = fileMostradorVc.ReadLine()
+            MessageBox.Show($"MOSTRADOR_VC:{mostrador}")
         End If
 
         Dim fileUrlMensajesRemoto As New IO.StreamReader(URL_MENSAJES_REMOTO)
-        URL = fileUrlMensajesRemoto.ReadLine()
+        URLMensajes = fileUrlMensajesRemoto.ReadLine()
+        MessageBox.Show($"URL:{URLMensajes}")
     End Sub
 
     Friend Shared Sub ManageKeyLogger(enable As Boolean)
         Try
             Select Case enable
                 Case True
-                    Using db As New Model.SisFarmaLectorEntities
-                        Dim cbs = db.medicamentos.Where(Function(med) med.cod_barras IsNot Nothing).Select(Function(med) med.cod_barras.Substring(0,3)).Distinct().ToList()
+                    Using db As New Model.SisFarmaLectorEntities                                                
+                        Dim cbs = db.medicamentos.Where(Function(med) med.cod_barras IsNot Nothing).Select(Function(med) med.cod_barras.Substring(0,3)).Distinct().ToList()                        
                         arr = cbs.ToArray() 
                         Dim snms = db.sinonimos.Where(Function(sin) sin.cod_barras IsNot Nothing).Select(Function(sin) sin.cod_barras.Substring(0,3)).Distinct().ToList()
                         arrS = snms.ToArray() 
                     End Using
+                    MessageBox.Show("ManageKeyLogger True")
+                    
                     'KBHook = SetWindowsHookEx(WH_KEYBOARD_LL, AddressOf KBProc, _
                     '        Runtime.InteropServices.GetHINSTANCE(GetType(Lector)) , 0)
                 Case False 
+                    MessageBox.Show("ManageKeyLogger False")
             End Select
 
         Catch ex As Exception
-
+            MessageBox.Show("ManageKeyLogger Exception")
         End Try
     End Sub
 

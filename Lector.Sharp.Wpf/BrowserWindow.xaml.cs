@@ -20,10 +20,17 @@ namespace Lector.Sharp.Wpf
     public partial class BrowserWindow : Window
     {
         private LowLevelWindowsListener _windows;
+        private bool _closed;
+
+        public bool IsClosed
+        {
+            get { return _closed; }
+        }
 
         public BrowserWindow()
         {
             _windows = new LowLevelWindowsListener();
+            _closed = false;
             InitializeComponent();
         }
 
@@ -41,6 +48,10 @@ namespace Lector.Sharp.Wpf
         {
             _windows.SetWindowPos(this, top ? LowLevelWindowsListener.HWND.TopMost : LowLevelWindowsListener.HWND.NoTopMost, 0, 0, 0, 0, LowLevelWindowsListener.SetWindowPosFlags.SWP_NOMOVE | LowLevelWindowsListener.SetWindowPosFlags.SWP_NOSIZE);
         }
-        
+
+        private void winBrowser_Closed(object sender, EventArgs e)
+        {
+            _closed = true;
+        }
     }
 }

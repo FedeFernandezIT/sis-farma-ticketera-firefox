@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lector.Sharp.Wpf"
         mc:Ignorable="d"
-        Title="Información" Loaded="winBrowser_Loaded" Unloaded="winBrowser_Unloaded" WindowStartupLocation="CenterScreen">
+        Title="Información" Loaded="winBrowser_Loaded" Unloaded="winBrowser_Unloaded" WindowStartupLocation="CenterScreen" Closed="winBrowser_Closed">
     <Grid>
         <WebBrowser x:Name="browser"/>
 

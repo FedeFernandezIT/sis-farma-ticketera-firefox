@@ -23,13 +23,28 @@ namespace Lector.Sharp.Wpf
     {
         private LowLevelKeyboardListener _listener;
         private FarmaService _service;
-        private string _keyData = string.Empty;        
-        
+        private string _keyData = string.Empty;
+        private BrowserWindow _infoBrowser;
+
+        public BrowserWindow InfoBrowser
+        {
+            get
+            {
+                if (_infoBrowser.IsClosed)
+                {
+                    _infoBrowser = new BrowserWindow();
+                }
+                return _infoBrowser;
+            }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
             _service = new FarmaService();
-            _listener = new LowLevelKeyboardListener();            
+            _listener = new LowLevelKeyboardListener();
+            _infoBrowser = new BrowserWindow();
+
             _service.LeerFicherosConfiguracion();
             _listener.OnKeyPressed += _listener_OnKeyPressed;
             _listener.HookKeyboard();            
@@ -39,21 +54,26 @@ namespace Lector.Sharp.Wpf
         {
             
         }
+        
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _listener.UnHookKeyboard();
+        }
 
         void _listener_OnKeyPressed(object sender, KeyPressedArgs e)
         {
             if (e.KeyPressed != Key.Enter)
             {
                 if (_keyData.Length > 50)
-                    _keyData = _keyData.Substring(_keyData.Length - 20 - 1);                                 
+                    _keyData = _keyData.Substring(_keyData.Length - 20 - 1);
                 if (e.KeyPressed >= Key.D0 && e.KeyPressed <= Key.D9)
                 {
                     var kc = new KeyConverter();
-                    _keyData += (char) KeyInterop.VirtualKeyFromKey(e.KeyPressed);                    
+                    _keyData += (char)KeyInterop.VirtualKeyFromKey(e.KeyPressed);
                 }
             }
             else
-            
+
             {
                 long number = 0;
                 if (long.TryParse(_keyData, out number) && _keyData.Length >= 4)
@@ -69,20 +89,20 @@ namespace Lector.Sharp.Wpf
                         _keyData = _keyData.Substring(_keyData.Length - 13);
                         noEntrar = _keyData.Substring(0, 4);
 
-                        if (Array.Exists(new[] { "1010", "1111", "0000", "9902", "9900", "9901", "9903", "9904", "9905", "9906", "9907", "9908", "9909", "9910", "9911", "9912", "9913", "9915", "9916", "9917", "9918", "9919", "9920", "1001", "2014", "2015", "2016", "2017", "2018" }, x => x.Equals(noEntrar)))                        
-                            continuar = true;                        
+                        if (Array.Exists(new[] { "1010", "1111", "0000", "9902", "9900", "9901", "9903", "9904", "9905", "9906", "9907", "9908", "9909", "9910", "9911", "9912", "9913", "9915", "9916", "9917", "9918", "9919", "9920", "1001", "2014", "2015", "2016", "2017", "2018" }, x => x.Equals(noEntrar)))
+                            continuar = true;
                         else
                         {
                             noEntrar = _keyData.Substring(0, 7);
-                            if (noEntrar.Equals("8470000"))                            
-                                continuar = true;                            
+                            if (noEntrar.Equals("8470000"))
+                                continuar = true;
                             else
                             {
                                 noEntrar = _keyData.Substring(0, 3);
-                                if (Array.Exists(_service.GetCodigoBarraMedicamentos(), x => x.Equals(noEntrar)))                                
-                                    continuarCodNacional = true;                                
-                                else if (Array.Exists(_service.GetCodigoBarraSinonimos(), x => x.Equals(noEntrar)))                                    
-                                        continuarCodNacional = true;                                    
+                                if (Array.Exists(_service.GetCodigoBarraMedicamentos(), x => x.Equals(noEntrar)))
+                                    continuarCodNacional = true;
+                                else if (Array.Exists(_service.GetCodigoBarraSinonimos(), x => x.Equals(noEntrar)))
+                                    continuarCodNacional = true;
                             }
                         }
                     }
@@ -91,48 +111,48 @@ namespace Lector.Sharp.Wpf
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 12);
                         noEntrar = _keyData.Substring(0, 4);
-                        if ("1111".Equals(noEntrar) || "0000".Equals(noEntrar))                        
-                            continuar = true;                        
+                        if ("1111".Equals(noEntrar) || "0000".Equals(noEntrar))
+                            continuar = true;
                     }
 
                     if (_keyData.Length >= 10 && !continuar && !continuarCodNacional)
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 10);
                         noEntrar = _keyData.Substring(0, 4);
-                        if ("1111".Equals(noEntrar) || "1930".Equals(noEntrar))                        
-                            continuar = true;                        
+                        if ("1111".Equals(noEntrar) || "1930".Equals(noEntrar))
+                            continuar = true;
                     }
 
                     if (_keyData.Length >= 7 && !continuar && !continuarCodNacional)
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 7);
                         noEntrar = _keyData.Substring(0, 4);
-                        if (Array.Exists(new[] { "1000", "1001", "1002", "1003" }, x => x.Equals(noEntrar)))                        
-                            continuar = true;                        
+                        if (Array.Exists(new[] { "1000", "1001", "1002", "1003" }, x => x.Equals(noEntrar)))
+                            continuar = true;
                     }
 
                     if (_keyData.Length >= 6 && !continuar && !continuarCodNacional)
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 6);
                         noEntrar = _keyData.Substring(0, 3);
-                        if (Array.Exists(new[] { "000", "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "100", "101", "102", "103" }, x => x.Equals(noEntrar)))                        
-                            continuar = true;                        
+                        if (Array.Exists(new[] { "000", "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "100", "101", "102", "103" }, x => x.Equals(noEntrar)))
+                            continuar = true;
                     }
 
                     if (_keyData.Length >= 5 && !continuar && !continuarCodNacional)
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 5);
                         noEntrar = _keyData.Substring(0, 2);
-                        if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))                        
-                            continuar = true;                       
+                        if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))
+                            continuar = true;
                     }
 
                     if (_keyData.Length >= 4 && !continuar && !continuarCodNacional)
                     {
                         _keyData = keyDataAux.Substring(_keyData.Length - 4);
                         noEntrar = _keyData.Substring(0, 2);
-                        if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))                        
-                            continuar = true;                        
+                        if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))
+                            continuar = true;
                     }
 
                     if (continuar)
@@ -161,24 +181,24 @@ namespace Lector.Sharp.Wpf
                         if (codNacional == null)
                         {
                             codNacional = _service.GetCodigoNacionalMedicamento(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
-                            if (codNacional == null)                            
-                                codNacional = Convert.ToInt64(_keyData.Substring(3, _keyData.Length - 4));                            
+                            if (codNacional == null)
+                                codNacional = Convert.ToInt64(_keyData.Substring(3, _keyData.Length - 4));
                         }
 
                         var asociado = _service.GetAsociado(Convert.ToInt64(codNacional));
                         var mostrarVentana = false;
-                        if (asociado != null)                        
-                            mostrarVentana = true;                        
+                        if (asociado != null)
+                            mostrarVentana = true;
                         else
                         {
                             var articulo = _service.GetArticulo(Convert.ToInt64(codNacional));
-                            if (articulo != null)                            
-                                mostrarVentana = true;                            
+                            if (articulo != null)
+                                mostrarVentana = true;
                             else
                             {
                                 var categ = _service.GetCategorizacion();
-                                if (categ != null)                                
-                                    mostrarVentana = true;                                
+                                if (categ != null)
+                                    mostrarVentana = true;
                             }
                         }
 
@@ -194,25 +214,18 @@ namespace Lector.Sharp.Wpf
                             }
                         }
                     }
-                    
+
                     if (lanzarBrowserWindow)
                     {
-                        var viewer = new BrowserWindow();
-                        viewer.browser.Navigate(_service.UrlNavegar);                  
+                        var viewer = InfoBrowser;
+                        viewer.browser.Navigate(_service.UrlNavegar);
                         viewer.Show();
                     }
                 }
 
                 _keyData = "";
-            }                                                
+            }
         }
-
-        
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            _listener.UnHookKeyboard();
-        }
-
         public static void SendKey(Key key)
         {
             if (Keyboard.PrimaryDevice != null)

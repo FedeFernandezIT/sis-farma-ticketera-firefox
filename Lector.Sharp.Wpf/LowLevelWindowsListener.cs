@@ -9,6 +9,9 @@ using System.Windows.Interop;
 
 namespace Lector.Sharp.Wpf
 {
+    /// <summary>
+    /// LowLevelWindowsListener permite el acceso a bajo nivel, para gestionar las ventanas
+    /// </summary>
     public class LowLevelWindowsListener
     {
         /// <summary>

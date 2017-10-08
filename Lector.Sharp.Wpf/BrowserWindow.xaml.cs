@@ -37,6 +37,7 @@ namespace Lector.Sharp.Wpf
         private void winBrowser_Loaded(object sender, RoutedEventArgs e)
         {
             ColocarEnTop(true);
+            WindowState = WindowState.Maximized;
         }
 
         private void winBrowser_Unloaded(object sender, RoutedEventArgs e)

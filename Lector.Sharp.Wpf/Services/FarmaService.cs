@@ -14,28 +14,48 @@ namespace Lector.Sharp.Wpf.Services
     {
         public string Url { get; set; }
         public string Mostrador { get; set; }
+        public string UrlNavegarCustom { get; set; }
         public string UrlMensajes { get; set; }
-        public string UrlNavegar { get; set; }                
+        public string UrlNavegar { get; set; }
 
+        /// <summary>
+        /// Lee los archivos de configuración y setea las propiedades correspondientes
+        /// </summary>
         public void LeerFicherosConfiguracion()
-        { 
-            var UrlInformacionRemoto = ConfigurationManager.AppSettings["Url.Informacion.Remoto"];
-            var UrlMensajesRemoto = ConfigurationManager.AppSettings["Url.Mensajes.Remoto"];
-            var MostradorVc = ConfigurationManager.AppSettings["Vc.Informacion.Mostrador"];
-
-            var fileUrlInformacionRemoto = new System.IO.StreamReader(UrlInformacionRemoto);
-            Url = fileUrlInformacionRemoto.ReadLine();
-
-            if (System.IO.File.Exists(MostradorVc))
+        {
+            try
             {
-                var fileMostradorVc = new System.IO.StreamReader(MostradorVc);
-                Mostrador = fileMostradorVc.ReadLine();
+                var UrlInformacionRemoto = ConfigurationManager.AppSettings["Url.Informacion.Remoto"];
+                var UrlMensajesRemoto = ConfigurationManager.AppSettings["Url.Mensajes.Remoto"];
+                var MostradorVc = ConfigurationManager.AppSettings["Vc.Informacion.Mostrador"];
+                var UrlCustom = ConfigurationManager.AppSettings["Url.Custom"];
+
+                var fileUrlInformacionRemoto = new System.IO.StreamReader(UrlInformacionRemoto);
+                Url = fileUrlInformacionRemoto.ReadLine();
+
+                Mostrador = "1";    // Valor por defecto
+                if (System.IO.File.Exists(MostradorVc))
+                {
+                    var fileMostradorVc = new System.IO.StreamReader(MostradorVc);
+                    Mostrador = fileMostradorVc.ReadLine();
+                }                
+
+                var fileUrlMensajesRemoto = new System.IO.StreamReader(UrlMensajesRemoto);
+                UrlMensajes = fileUrlMensajesRemoto.ReadLine();
+
+                var fileUrlCustom = new System.IO.StreamReader(UrlCustom);
+                UrlNavegarCustom  = fileUrlCustom.ReadLine();
             }
-            
-            var fileUrlMensajesRemoto = new System.IO.StreamReader(UrlMensajesRemoto);
-            UrlMensajes = fileUrlMensajesRemoto.ReadLine();            
+            catch (Exception)
+            {
+                LeerFicherosConfiguracion();
+            }            
         }
 
+        /// <summary>
+        /// Obtiene los códigos de barras de los medicametos y formatea la salida de los mismos.
+        /// </summary>
+        /// <returns>códigos de barras formateados</returns>
         public string[] GetCodigoBarraMedicamentos()
         {
             using (var db = new SisFarmaEntities())
@@ -45,6 +65,10 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene los códigos de barras de los sinónimos y formatea la salida de los mismos.
+        /// </summary>
+        /// <returns>Códigos de barras formateados</returns>
         public string[] GetCodigoBarraSinonimos()
         {
             using (var db = new SisFarmaEntities())
@@ -54,6 +78,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un cliente con una determinada tarjeta
+        /// </summary>
+        /// <param name="tarjeta"></param>
+        /// <returns></returns>
         public clientes GetCliente(string tarjeta)
         {
             using (var db = new SisFarmaEntities())
@@ -66,6 +95,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un trabajador con una determinada tarjeta
+        /// </summary>
+        /// <param name="tarjeta"></param>
+        /// <returns></returns>
         public trabajador GetTrabajador(string tarjeta)
         {
             using (var db = new SisFarmaEntities())
@@ -78,6 +112,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene el código nacional de un sinónimo según un filtro aplicado a los códigos de barra
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>código nacioanal</returns>
         public long? GetCodigoNacionalSinonimo(string filter)
         {
             using (var db = new SisFarmaEntities())
@@ -91,6 +130,11 @@ namespace Lector.Sharp.Wpf.Services
             }            
         }
 
+        /// <summary>
+        /// Obtiene el código nacional de un medicamento según un filtro aplicado a los códigos de barra
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns>código nacioanal</returns>
         public long? GetCodigoNacionalMedicamento(string filter)
         {
             using (var db = new SisFarmaEntities())
@@ -103,6 +147,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un asociado en la ventas por el código nacional.
+        /// </summary>
+        /// <param name="codNacional"></param>
+        /// <returns>Asociado</returns>
         public asociados_cruzadas GetAsociado(long codNacional)
         {
             using (var db = new SisFarmaEntities())
@@ -115,11 +164,7 @@ namespace Lector.Sharp.Wpf.Services
                                  where v.eliminado == false && v.activo == true
                                  select a).ToList();
 
-                    return query.Count != 0 ? query.First() : null;
-                    //return db.ventas_cruzadas.Where(vta => vta.eliminado == false && vta.activo == true)
-                    //.Join(db.asociados_cruzadas.Where(asoc => asoc.asociado == codNacional.ToString()),
-                    //    v => v.id, a => (decimal)a.idVentaCruzada, (v, a) => new { Asociado = a })
-                    //.Select(x => x.Asociado).Take(1).Single();
+                    return query.Count != 0 ? query.First() : null;                   
                 }
                 catch (InvalidOperationException)
                 {
@@ -128,6 +173,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene un artículo de las ventas según el código nacional
+        /// </summary>
+        /// <param name="codNacional"></param>
+        /// <returns></returns>
         public listas_articulos GetArticulo(long codNacional)
         {
             using (var db = new SisFarmaEntities())
@@ -148,6 +198,10 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene la primera categorización
+        /// </summary>
+        /// <returns></returns>
         public categorizacion GetCategorizacion()
         {
             using (var db = new SisFarmaEntities())
@@ -163,6 +217,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene el código nacional de un asociado categorizado con ventas, según un código nacioanal
+        /// </summary>
+        /// <param name="codNacional"></param>
+        /// <returns></returns>
         public long? GetAsociadoCategorizacion(long codNacional)
         {
             using (var db = new SisFarmaEntities())
@@ -178,6 +237,11 @@ namespace Lector.Sharp.Wpf.Services
             }
         }
 
+        /// <summary>
+        /// Obtiene el código nacional de un asociado con ventas de medicamentos, según un código nacional
+        /// </summary>
+        /// <param name="codNacional"></param>
+        /// <returns>Código nacional</returns>
         public long? GetAnyAsociadoMedicamento(long codNacional)
         {
             using (var db = new SisFarmaEntities())
@@ -192,40 +256,6 @@ namespace Lector.Sharp.Wpf.Services
                 return query.Length != 0 ? query[0] as long? : null;
             }
         }
-
-        private string SubstringLastIndex(string source, char delimiter)
-        {
-            try
-            {
-                var pos = SqlFunctions.CharIndex(source, delimiter.ToString());
-                if (pos != null)
-                {
-                    return source.Substring(Convert.ToInt32(pos));
-                }
-                return source;
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return source;
-            }            
-        }
-
-        private string SubstringIndex(string source, char delimiter)
-        {
-            try
-            {
-                return source.Substring(source.IndexOf(delimiter));
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                return source;
-            }
-        }
-
-        private int IndexOf(string source, char delimiter)
-        {
-            var s = source;
-            return s.IndexOf(delimiter);
-        }
+    
     }
 }

@@ -51,6 +51,11 @@ namespace Lector.Sharp.Wpf
         private BrowserWindow _customBrowser;
 
         /// <summary>
+        /// Icono de barra de tareas, gestiona la salida del programa
+        /// </summary>
+        private System.Windows.Forms.NotifyIcon _iconNotification;
+
+        /// <summary>
         /// Devuelve una ventana para mostrar info de la base de datos, si esta ya ce cerró devuelve una nueva
         /// </summary>
         public BrowserWindow InfoBrowser
@@ -95,8 +100,41 @@ namespace Lector.Sharp.Wpf
             _listener.OnKeyPressed += _listener_OnKeyPressed;
 
             // Activamos el listener de teclado
-            _listener.HookKeyboard();            
+            _listener.HookKeyboard();
+
+            _iconNotification = new System.Windows.Forms.NotifyIcon();
+            _iconNotification.BalloonTipText = "La Aplicación SisFarma se encuentra ejecutando";
+            _iconNotification.BalloonTipTitle = "SisFarma Notificación";
+            _iconNotification.Text = "Presione Click para Mostrar";
+            _iconNotification.Icon = new System.Drawing.Icon(@"./Icons/sisfarma-logo.ico");
+            _iconNotification.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+
+            System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();            
+            System.Windows.Forms.MenuItem notificactionInfoMenu = new System.Windows.Forms.MenuItem("Info");
+            notificactionInfoMenu.Click += notificactionInfoMenu_Click;
+            System.Windows.Forms.MenuItem notificationQuitMenu = new System.Windows.Forms.MenuItem("Salir");
+            notificationQuitMenu.Click += notificationQuitMenu_Click;
+
+            menu.MenuItems.Add(notificactionInfoMenu);
+            menu.MenuItems.Add(notificationQuitMenu);            
+            _iconNotification.ContextMenu = menu;
+            _iconNotification.Visible = true;
         }
+
+        /// <summary>
+        /// Acción para salir del programa.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void notificationQuitMenu_Click(object sender, EventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void notificactionInfoMenu_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("SisFarma Application \nsisfarma.es");
+        }    
        
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -109,7 +147,7 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         /// <param name="sender">Listener del teclado</param>
         /// <param name="e">Información de la tecla presionada</param>
-        void _listener_OnKeyPressed(object sender, KeyPressedArgs e)
+        private void _listener_OnKeyPressed(object sender, KeyPressedArgs e)
         {
             try
             {
@@ -127,7 +165,7 @@ namespace Lector.Sharp.Wpf
                     }
                     // Si la tecla presioanada es numérica
                     else if (!_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) &&
-                        e.KeyPressed >= Key.D0 && e.KeyPressed <= Key.D9)
+                        (e.KeyPressed >= Key.D0 && e.KeyPressed <= Key.D9 || e.KeyPressed >= Key.NumPad0 && e.KeyPressed <= Key.NumPad9))
                     {
                         // Almacenamos el valor de la tecla.
                         StoreKey(e.KeyPressed);
@@ -312,8 +350,9 @@ namespace Lector.Sharp.Wpf
         {
             if (_keyData.Length > 50)
                 _keyData = _keyData.Substring(_keyData.Length - 20 - 1);
-            var kc = new KeyConverter();            
-            _keyData += kc.ConvertToString(key);
+            var kc = new KeyConverter();
+            // Key.NumPad# se convierte en 'NumPad#' por lo cual lo eliminamos
+            _keyData += kc.ConvertToString(key)?.Replace("NumPad", string.Empty);
         }
 
         /// <summary>

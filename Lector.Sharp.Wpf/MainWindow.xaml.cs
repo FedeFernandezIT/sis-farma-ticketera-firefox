@@ -312,9 +312,8 @@ namespace Lector.Sharp.Wpf
         {
             if (_keyData.Length > 50)
                 _keyData = _keyData.Substring(_keyData.Length - 20 - 1);
-            var kc = new KeyConverter();
-
-            _keyData += (char)KeyInterop.VirtualKeyFromKey(key);            
+            var kc = new KeyConverter();            
+            _keyData += kc.ConvertToString(key);
         }
 
         /// <summary>

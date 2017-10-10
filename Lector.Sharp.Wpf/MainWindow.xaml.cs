@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Deployment.Application;
 
 namespace Lector.Sharp.Wpf
 {
@@ -87,6 +88,46 @@ namespace Lector.Sharp.Wpf
 
         public MainWindow()
         {
+            UpdateCheckInfo info;
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+                try
+                {
+                    info = ad.CheckForDetailedUpdate();
+                }
+                catch (DeploymentDownloadException dde)
+                {
+                    System.Windows.MessageBox.Show("No se pudieron descargar las actualizaciones.\nError: " + dde.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                catch (InvalidDeploymentException ide)
+                {
+                    System.Windows.MessageBox.Show("No se pudo verificar la existencia de nuevas actualizaciones.\nError: " + ide.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                catch (InvalidOperationException ioe)
+                {
+                    System.Windows.MessageBox.Show("La aplicación no pudo actualizarse.\nError: " + ioe.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (info.UpdateAvailable)
+                {
+                    if (System.Windows.MessageBox.Show("Una nueva versión está disponible ¿desea actualiazar su versión local?", "Mensaje", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                    {
+                        try
+                        {
+                            ad.Update();
+                            System.Windows.Application.Current.Run();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Windows.MessageBox.Show(ex.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
+                            throw;
+                        }
+                    }
+                }
+            }
             InitializeComponent();
             _service = new FarmaService();
             _listener = new LowLevelKeyboardListener();
@@ -134,7 +175,7 @@ namespace Lector.Sharp.Wpf
 
         private void notificactionInfoMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SisFarma Application \nsisfarma.es");
+            MessageBox.Show("SisFarma Application\nsisfarma.es");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -334,7 +375,7 @@ namespace Lector.Sharp.Wpf
                 if (lanzarBrowserWindow)
                 {
                     var viewer = InfoBrowser;
-                    viewer.browser.Navigate(_service.UrlNavegar);
+                    viewer.browser.Navigate(_service.UrlNavegar);                    
                     viewer.Show();
                 }
             }
@@ -370,8 +411,9 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser)
-        {            
-            browser.browser.Navigate(_service.UrlNavegarCustom);
+        {
+            //browser.browser.Navigate(_service.UrlNavegarCustom);
+            browser.browser.Navigate("http://hotmail.com");
             browser.Show();
         }
 

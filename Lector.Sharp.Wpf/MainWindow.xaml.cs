@@ -106,19 +106,20 @@ namespace Lector.Sharp.Wpf
             _iconNotification.BalloonTipText = "La Aplicación SisFarma se encuentra ejecutando";
             _iconNotification.BalloonTipTitle = "SisFarma Notificación";
             _iconNotification.Text = "Presione Click para Mostrar";
-            _iconNotification.Icon = new System.Drawing.Icon(@"./Icons/sisfarma-logo.ico");
+            _iconNotification.Icon = Lector.Sharp.Wpf.Properties.Resources.Logo;            
             _iconNotification.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 
-            System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();            
+            System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();
             System.Windows.Forms.MenuItem notificactionInfoMenu = new System.Windows.Forms.MenuItem("Info");
             notificactionInfoMenu.Click += notificactionInfoMenu_Click;
             System.Windows.Forms.MenuItem notificationQuitMenu = new System.Windows.Forms.MenuItem("Salir");
             notificationQuitMenu.Click += notificationQuitMenu_Click;
 
             menu.MenuItems.Add(notificactionInfoMenu);
-            menu.MenuItems.Add(notificationQuitMenu);            
+            menu.MenuItems.Add(notificationQuitMenu);
             _iconNotification.ContextMenu = menu;
             _iconNotification.Visible = true;
+            
         }
 
         /// <summary>
@@ -134,8 +135,8 @@ namespace Lector.Sharp.Wpf
         private void notificactionInfoMenu_Click(object sender, EventArgs e)
         {
             MessageBox.Show("SisFarma Application \nsisfarma.es");
-        }    
-       
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Desactivamos el listener del teclado

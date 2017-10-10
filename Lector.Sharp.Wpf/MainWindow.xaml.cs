@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Deployment.Application;
+using Microsoft.Win32;
 
 namespace Lector.Sharp.Wpf
 {
@@ -88,46 +89,7 @@ namespace Lector.Sharp.Wpf
 
         public MainWindow()
         {
-            UpdateCheckInfo info;
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
-                try
-                {
-                    info = ad.CheckForDetailedUpdate();
-                }
-                catch (DeploymentDownloadException dde)
-                {
-                    System.Windows.MessageBox.Show("No se pudieron descargar las actualizaciones.\nError: " + dde.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                catch (InvalidDeploymentException ide)
-                {
-                    System.Windows.MessageBox.Show("No se pudo verificar la existencia de nuevas actualizaciones.\nError: " + ide.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                catch (InvalidOperationException ioe)
-                {
-                    System.Windows.MessageBox.Show("La aplicación no pudo actualizarse.\nError: " + ioe.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-                if (info.UpdateAvailable)
-                {
-                    if (System.Windows.MessageBox.Show("Una nueva versión está disponible ¿desea actualiazar su versión local?", "Mensaje", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                    {
-                        try
-                        {
-                            ad.Update();
-                            System.Windows.Application.Current.Run();
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Windows.MessageBox.Show(ex.Message, "Mensaje", MessageBoxButton.OK, MessageBoxImage.Error);
-                            throw;
-                        }
-                    }
-                }
-            }
+            RegisterStartup();
             InitializeComponent();
             _service = new FarmaService();
             _listener = new LowLevelKeyboardListener();
@@ -161,6 +123,17 @@ namespace Lector.Sharp.Wpf
             _iconNotification.ContextMenu = menu;
             _iconNotification.Visible = true;
             
+        }
+
+        /// <summary>
+        /// Registra la aplicación en el Registro de sistema para que arranque junto al sistema.
+        /// </summary>
+        private void RegisterStartup()
+        {           
+            RegistryKey reg =
+                Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+            reg.SetValue("SisFarma Lector", System.Reflection.Assembly.GetExecutingAssembly().Location);
+            //MessageBox.Show("Startup success", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         /// <summary>

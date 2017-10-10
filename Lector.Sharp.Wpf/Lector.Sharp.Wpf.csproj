@@ -238,6 +238,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Files\url_custom.txt" />
+    <EmbeddedResource Include="Files\url_informacion_remoto.txt" />
+    <EmbeddedResource Include="Files\url_mensajes_remoto.txt" />
     <Content Include="Models\SisFarmaModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>SisFarmaModel.edmx</DependentUpon>
@@ -256,6 +259,10 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -1,12 +1,9 @@
-﻿using Lector.Sharp.Wpf.Models;
-using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data.Entity.SqlServer;
+﻿using System;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
+using Lector.Sharp.Wpf.Models;
+using MySql.Data.MySqlClient;
 
 namespace Lector.Sharp.Wpf.Services
 {
@@ -24,27 +21,42 @@ namespace Lector.Sharp.Wpf.Services
         public void LeerFicherosConfiguracion()
         {
             try
-            {
-                var UrlInformacionRemoto = ConfigurationManager.AppSettings["Url.Informacion.Remoto"];
-                var UrlMensajesRemoto = ConfigurationManager.AppSettings["Url.Mensajes.Remoto"];
-                var MostradorVc = ConfigurationManager.AppSettings["Vc.Informacion.Mostrador"];
-                var UrlCustom = ConfigurationManager.AppSettings["Url.Custom"];
+            {                
+                var assembly = Assembly.GetExecutingAssembly();
+                var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                var fileUrlInformacionRemoto = new System.IO.StreamReader(UrlInformacionRemoto);
-                Url = fileUrlInformacionRemoto.ReadLine();
-
-                Mostrador = "1";    // Valor por defecto
-                if (System.IO.File.Exists(MostradorVc))
+                var streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_informacion_remoto.txt");
+                if (streamFile != null)
                 {
-                    var fileMostradorVc = new System.IO.StreamReader(MostradorVc);
-                    Mostrador = fileMostradorVc.ReadLine();
-                }                
+                    var fileReader = new StreamReader(streamFile);
+                    Url = fileReader.ReadLine();
+                }
 
-                var fileUrlMensajesRemoto = new System.IO.StreamReader(UrlMensajesRemoto);
-                UrlMensajes = fileUrlMensajesRemoto.ReadLine();
+                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.mostrador_vc.txt");
+                if (streamFile != null)
+                {
+                    var fileReader = new StreamReader(streamFile);
+                    Mostrador = fileReader.ReadLine();
+                }
+                else
+                {
+                    Mostrador = "1";    // Valor por defecto
+                }
+                
+                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_mensajes_remoto.txt");
+                if (streamFile != null)
+                {
+                    var fileReader = new StreamReader(streamFile);
+                    UrlMensajes = fileReader.ReadLine();
+                }
 
-                var fileUrlCustom = new System.IO.StreamReader(UrlCustom);
-                UrlNavegarCustom  = fileUrlCustom.ReadLine();
+                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_custom.txt");
+                if (streamFile != null)
+                {
+                    var fileReader = new StreamReader(streamFile);
+                    UrlNavegarCustom = fileReader.ReadLine();
+                }
+
             }
             catch (Exception)
             {

@@ -385,8 +385,7 @@ namespace Lector.Sharp.Wpf
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser)
         {
-            //browser.browser.Navigate(_service.UrlNavegarCustom);
-            browser.browser.Navigate("http://hotmail.com");
+            browser.browser.Navigate(_service.UrlNavegarCustom);            
             browser.Show();
         }
 

@@ -211,8 +211,6 @@ namespace Lector.Sharp.Wpf
             if (long.TryParse(_keyData, out number) && _keyData.Length >= 4)
             {
 
-
-
                 var lanzarBrowserWindow = false;
                 var noEntrar = string.Empty;
                 var continuar = false;
@@ -393,11 +391,9 @@ namespace Lector.Sharp.Wpf
         {
             browser.browser.Navigate(_service.UrlNavegarCustom);
             browser.Visibility = Visibility.Visible;
-            browser.WindowState = WindowState.Maximized;            
-            browser.Show();
-            _window.SetWindowPos(this, LowLevelWindowsListener.HWND.TopMost, 0, 0, 0, 0, LowLevelWindowsListener.SetWindowPosFlags.SWP_NOMOVE | LowLevelWindowsListener.SetWindowPosFlags.SWP_NOSIZE);
-            browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;
+            //_window.SetWindowPos(this, LowLevelWindowsListener.HWND.TopMost, 0, 0, 0, 0, LowLevelWindowsListener.SetWindowPosFlags.SWP_NOMOVE | LowLevelWindowsListener.SetWindowPosFlags.SWP_NOSIZE);
+            browser.Topmost = true;
             browser.Show();
         }
 

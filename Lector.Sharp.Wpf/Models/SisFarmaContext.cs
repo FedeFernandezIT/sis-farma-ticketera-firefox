@@ -11,14 +11,14 @@ namespace Lector.Sharp.Wpf.Models
     public partial class SisFarmaEntities : DbContext
     {
         public SisFarmaEntities(string server, string catalog) 
-            : this()
+            : base(BuildConnectionString(server, catalog))
         {
         }
 
         private static string BuildConnectionString(string dataSource, string database)
         {
             // Construcción de connectionString
-            var connectionString = $"&quot;server={dataSource};user id=plector;password=Njmm_851;persistsecurityinfo=True;database={database}&quot;";
+            var connectionString = $"server={dataSource};user id=plector;password=Njmm_851;persistsecurityinfo=True;database={database}";
             var metadata = "res://*/Models.SisFarmaModel.csdl|res://*/Models.SisFarmaModel.ssdl|res://*/Models.SisFarmaModel.msl";
             var provider = "MySql.Data.MySqlClient";
             // Build the connection string from the provided datasource and database
@@ -32,7 +32,8 @@ namespace Lector.Sharp.Wpf.Models
             esb.ProviderConnectionString = connectionString;
 
             // Generate the full string and return it
-            return esb.ToString();
+            var str = esb.ToString();
+            return str;
         }
     }
     

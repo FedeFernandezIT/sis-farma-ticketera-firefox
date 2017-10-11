@@ -31,13 +31,13 @@ namespace Lector.Sharp.Wpf
         {
             _windows = new LowLevelWindowsListener();
             _closed = false;
-            InitializeComponent();
+            InitializeComponent();            
         }
 
         private void winBrowser_Loaded(object sender, RoutedEventArgs e)
         {
             ColocarEnTop(true);
-            WindowState = WindowState.Maximized;
+            WindowState = WindowState.Maximized;            
         }
 
         private void winBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -54,5 +54,6 @@ namespace Lector.Sharp.Wpf
         {
             _closed = true;
         }
+        
     }
 }

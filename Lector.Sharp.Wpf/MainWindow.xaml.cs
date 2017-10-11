@@ -27,6 +27,7 @@ namespace Lector.Sharp.Wpf
         /// Listener que escucha cada vez que se presiona una tecla.       
         /// </summary>
         private LowLevelKeyboardListener _listener;
+        private LowLevelWindowsListener _window;
 
         /// <summary>
         /// Gestiona todos los servicios de SisFarma, como acceso a la
@@ -95,6 +96,7 @@ namespace Lector.Sharp.Wpf
             _listener = new LowLevelKeyboardListener();
             _infoBrowser = new BrowserWindow();
             _customBrowser = new BrowserWindow();
+            _window = new LowLevelWindowsListener();
 
             // Leemos los archivos de configuración
             _service.LeerFicherosConfiguracion();
@@ -208,6 +210,9 @@ namespace Lector.Sharp.Wpf
             // Si el valor almacenado en _keyData en numérico y con longitud superior a 4
             if (long.TryParse(_keyData, out number) && _keyData.Length >= 4)
             {
+
+
+
                 var lanzarBrowserWindow = false;
                 var noEntrar = string.Empty;
                 var continuar = false;
@@ -348,7 +353,8 @@ namespace Lector.Sharp.Wpf
                 if (lanzarBrowserWindow)
                 {
                     var viewer = InfoBrowser;
-                    viewer.browser.Navigate(_service.UrlNavegar);                    
+                    viewer.browser.Navigate(_service.UrlNavegar);
+                    viewer.WindowState = WindowState.Maximized;
                     viewer.Show();
                 }
             }
@@ -385,7 +391,13 @@ namespace Lector.Sharp.Wpf
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser)
         {
-            browser.browser.Navigate(_service.UrlNavegarCustom);            
+            browser.browser.Navigate(_service.UrlNavegarCustom);
+            browser.Visibility = Visibility.Visible;
+            browser.WindowState = WindowState.Maximized;            
+            browser.Show();
+            _window.SetWindowPos(this, LowLevelWindowsListener.HWND.TopMost, 0, 0, 0, 0, LowLevelWindowsListener.SetWindowPosFlags.SWP_NOMOVE | LowLevelWindowsListener.SetWindowPosFlags.SWP_NOSIZE);
+            browser.Visibility = Visibility.Visible;
+            browser.WindowState = WindowState.Maximized;
             browser.Show();
         }
 

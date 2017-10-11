@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using Lector.Sharp.Wpf.Models;
 using MySql.Data.MySqlClient;
+using System.Configuration;
+using System.IO;
 
 namespace Lector.Sharp.Wpf.Services
 {
@@ -14,6 +16,8 @@ namespace Lector.Sharp.Wpf.Services
         public string UrlNavegarCustom { get; set; }
         public string UrlMensajes { get; set; }
         public string UrlNavegar { get; set; }
+        public string DatabaseServer { get; set; }
+        public string DatabaseCatalog { get; set; }
 
         /// <summary>
         /// Lee los archivos de configuración y setea las propiedades correspondientes
@@ -21,42 +25,37 @@ namespace Lector.Sharp.Wpf.Services
         public void LeerFicherosConfiguracion()
         {
             try
-            {                
-                var assembly = Assembly.GetExecutingAssembly();
-                var currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            {
+                var pathUrlInformacionRemoto = ConfigurationManager.AppSettings["Url.Informacion.Remoto"];
+                var pathUrlMensajesRemoto = ConfigurationManager.AppSettings["Url.Mensajes.Remoto"];
+                var pathUrlCustom = ConfigurationManager.AppSettings["Url.Custom"];
+                var pathMostradorVc = ConfigurationManager.AppSettings["Mostrador.Vc"];
+                var pathDatabaseServer = ConfigurationManager.AppSettings["Database.Server"];
+                var pathDatabseCatalog = ConfigurationManager.AppSettings["Database.Catalog"];
 
-                var streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_informacion_remoto.txt");
-                if (streamFile != null)
-                {
-                    var fileReader = new StreamReader(streamFile);
-                    Url = fileReader.ReadLine();
-                }
+                Url = File.Exists(pathUrlInformacionRemoto)
+                    ? new StreamReader(pathUrlInformacionRemoto).ReadLine()
+                    : string.Empty;
 
-                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.mostrador_vc.txt");
-                if (streamFile != null)
-                {
-                    var fileReader = new StreamReader(streamFile);
-                    Mostrador = fileReader.ReadLine();
-                }
-                else
-                {
-                    Mostrador = "1";    // Valor por defecto
-                }
-                
-                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_mensajes_remoto.txt");
-                if (streamFile != null)
-                {
-                    var fileReader = new StreamReader(streamFile);
-                    UrlMensajes = fileReader.ReadLine();
-                }
+                Mostrador = File.Exists(pathMostradorVc)
+                    ? new StreamReader(pathMostradorVc).ReadLine()
+                    : "1";
 
-                streamFile = assembly.GetManifestResourceStream("Lector.Sharp.Wpf.Files.url_custom.txt");
-                if (streamFile != null)
-                {
-                    var fileReader = new StreamReader(streamFile);
-                    UrlNavegarCustom = fileReader.ReadLine();
-                }
+                UrlMensajes = File.Exists(pathUrlMensajesRemoto)
+                    ? new StreamReader(pathUrlMensajesRemoto).ReadLine()
+                    : string.Empty;
 
+                UrlNavegarCustom = File.Exists(pathUrlCustom)
+                    ? new StreamReader(pathUrlCustom).ReadLine()
+                    : string.Empty;
+
+                DatabaseServer = File.Exists(pathDatabaseServer)
+                    ? new StreamReader(pathDatabaseServer).ReadLine()
+                    : string.Empty;
+
+                DatabaseCatalog = File.Exists(pathDatabseCatalog)
+                    ? new StreamReader(pathDatabseCatalog).ReadLine()
+                    : string.Empty;
             }
             catch (Exception)
             {
@@ -70,7 +69,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>códigos de barras formateados</returns>
         public string[] GetCodigoBarraMedicamentos()
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 return db.medicamentos.Where(med => med.cod_barras != null).Distinct()
                     .Select(med => med.cod_barras.Substring(0, 3)).ToArray();
@@ -83,7 +82,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>Códigos de barras formateados</returns>
         public string[] GetCodigoBarraSinonimos()
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 return db.sinonimos.Where(sin => sin.cod_barras != null).Distinct()
                     .Select(sin => sin.cod_barras.Substring(0, 3)).ToArray();
@@ -97,7 +96,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns></returns>
         public clientes GetCliente(string tarjeta)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 if (db.clientes.Any(cli => cli.tarjeta == tarjeta))
                 {
@@ -114,7 +113,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns></returns>
         public trabajador GetTrabajador(string tarjeta)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 if (db.trabajador.Any(tr => tr.tarjeta == tarjeta))
                 {
@@ -131,7 +130,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>código nacioanal</returns>
         public long? GetCodigoNacionalSinonimo(string filter)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 if (db.sinonimos.Any(sin => sin.cod_barras.StartsWith(filter)))
                 {
@@ -149,7 +148,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>código nacioanal</returns>
         public long? GetCodigoNacionalMedicamento(string filter)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 if (db.medicamentos.Any(med => med.cod_barras.StartsWith(filter)))
                 {
@@ -166,7 +165,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>Asociado</returns>
         public asociados_cruzadas GetAsociado(long codNacional)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 try
                 {
@@ -192,7 +191,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns></returns>
         public listas_articulos GetArticulo(long codNacional)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 try
                 {
@@ -216,7 +215,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns></returns>
         public categorizacion GetCategorizacion()
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 try
                 {
@@ -236,7 +235,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns></returns>
         public long? GetAsociadoCategorizacion(long codNacional)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 var sql = "SELECT c.cod_nacional AS asociado " +
                             "FROM ventas_cruzadas v " +
@@ -256,7 +255,7 @@ namespace Lector.Sharp.Wpf.Services
         /// <returns>Código nacional</returns>
         public long? GetAnyAsociadoMedicamento(long codNacional)
         {
-            using (var db = new SisFarmaEntities())
+            using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
                 var sql = "SELECT m.cod_nacional AS asociado " +
                             "FROM ventas_cruzadas v " +

@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>C:\NunaIT\Projects\Freelancer\Deployments\sisfarma\</PublishUrl>
+    <PublishUrl>C:\apache\tomcat\Tomcat 8.5\webapps\sisfarma\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,15 +25,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://localhost:9001/</InstallUrl>
-    <UpdateUrl>http://localhost:9001/</UpdateUrl>
+    <InstallUrl>http://localhost:8080/sisfarma/</InstallUrl>
+    <UpdateUrl>http://localhost:8080/sisfarma/</UpdateUrl>
     <ProductName>SisFarma Lector</ProductName>
     <PublisherName>SisFarma</PublisherName>
     <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <WebPage>Publish.html</WebPage>
+    <WebPage>index.html</WebPage>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -148,6 +148,7 @@
     <Compile Include="Models\sinonimos.cs">
       <DependentUpon>SisFarmaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SisFarmaContext.cs" />
     <Compile Include="Models\SisFarmaModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -223,7 +224,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

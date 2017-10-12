@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Deployment.Application;
 using Microsoft.Win32;
+using System.IO;
 
 namespace Lector.Sharp.Wpf
 {
@@ -90,40 +91,48 @@ namespace Lector.Sharp.Wpf
 
         public MainWindow()
         {
-            RegisterStartup();
-            InitializeComponent();
-            _service = new FarmaService();
-            _listener = new LowLevelKeyboardListener();
-            _infoBrowser = new BrowserWindow();
-            _customBrowser = new BrowserWindow();
-            _window = new LowLevelWindowsListener();
+            try
+            {
+                RegisterStartup();
+                InitializeComponent();
+                _service = new FarmaService();
+                _listener = new LowLevelKeyboardListener();
+                _infoBrowser = new BrowserWindow();
+                _customBrowser = new BrowserWindow();
+                _window = new LowLevelWindowsListener();
 
-            // Leemos los archivos de configuración
-            _service.LeerFicherosConfiguracion();
+                // Leemos los archivos de configuración
+                _service.LeerFicherosConfiguracion();
 
-            // Setamos el comportamiento de la aplicación al presionar una tecla
-            _listener.OnKeyPressed += _listener_OnKeyPressed;
+                // Setamos el comportamiento de la aplicación al presionar una tecla
+                _listener.OnKeyPressed += _listener_OnKeyPressed;
 
-            // Activamos el listener de teclado
-            _listener.HookKeyboard();
+                // Activamos el listener de teclado
+                _listener.HookKeyboard();
 
-            _iconNotification = new System.Windows.Forms.NotifyIcon();
-            _iconNotification.BalloonTipText = "La Aplicación SisFarma se encuentra ejecutando";
-            _iconNotification.BalloonTipTitle = "SisFarma Notificación";
-            _iconNotification.Text = "Presione Click para Mostrar";
-            _iconNotification.Icon = Lector.Sharp.Wpf.Properties.Resources.Logo;            
-            _iconNotification.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+                _iconNotification = new System.Windows.Forms.NotifyIcon();
+                _iconNotification.BalloonTipText = "La Aplicación SisFarma se encuentra ejecutando";
+                _iconNotification.BalloonTipTitle = "SisFarma Notificación";
+                _iconNotification.Text = "Presione Click para Mostrar";
+                _iconNotification.Icon = Lector.Sharp.Wpf.Properties.Resources.Logo;
+                _iconNotification.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 
-            System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();
-            System.Windows.Forms.MenuItem notificactionInfoMenu = new System.Windows.Forms.MenuItem("Info");
-            notificactionInfoMenu.Click += notificactionInfoMenu_Click;
-            System.Windows.Forms.MenuItem notificationQuitMenu = new System.Windows.Forms.MenuItem("Salir");
-            notificationQuitMenu.Click += notificationQuitMenu_Click;
+                System.Windows.Forms.ContextMenu menu = new System.Windows.Forms.ContextMenu();
+                System.Windows.Forms.MenuItem notificactionInfoMenu = new System.Windows.Forms.MenuItem("Info");
+                notificactionInfoMenu.Click += notificactionInfoMenu_Click;
+                System.Windows.Forms.MenuItem notificationQuitMenu = new System.Windows.Forms.MenuItem("Salir");
+                notificationQuitMenu.Click += notificationQuitMenu_Click;
 
-            menu.MenuItems.Add(notificactionInfoMenu);
-            menu.MenuItems.Add(notificationQuitMenu);
-            _iconNotification.ContextMenu = menu;
-            _iconNotification.Visible = true;
+                menu.MenuItems.Add(notificactionInfoMenu);
+                menu.MenuItems.Add(notificationQuitMenu);
+                _iconNotification.ContextMenu = menu;
+                _iconNotification.Visible = true;
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
             
         }
 
@@ -173,7 +182,7 @@ namespace Lector.Sharp.Wpf
                     // Si presionamos SHIFT + F1
                     if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F1)
                         // Abrimos una ventana con la web personalizada.
-                        OpenWindowBrowser(CustomBrowser);                    
+                        OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom);                    
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
@@ -189,12 +198,19 @@ namespace Lector.Sharp.Wpf
                     }
                 }
                 else
-                {                    
-                    ProccessEnterKey();
+                {
+                    if (ProccessEnterKey())
+                    {
+                        OpenWindowBrowser(InfoBrowser, _service.UrlNavegar);
+                    }                    
                 }
             }
             catch (Exception ex)
             {
+                if (ex is MySql.Data.MySqlClient.MySqlException)
+                {
+
+                }
                 MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
@@ -203,7 +219,7 @@ namespace Lector.Sharp.Wpf
         /// <summary>
         /// Procesa los _keyData para buscar datos en la base de datos
         /// </summary>
-        private void ProccessEnterKey()
+        private bool ProccessEnterKey()
         {
             long number = 0;
             // Si el valor almacenado en _keyData en numérico y con longitud superior a 4
@@ -218,14 +234,6 @@ namespace Lector.Sharp.Wpf
 
                 if (_keyData.Length >= 13)
                 {
-
-
-
-
-
-
-
-
                     _keyData = _keyData.Substring(_keyData.Length - 13);
                     noEntrar = _keyData.Substring(0, 4);
 
@@ -317,57 +325,80 @@ namespace Lector.Sharp.Wpf
                 }
                 else
                 {
-                    var codNacional = _service.GetCodigoNacionalSinonimo(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
-                    if (codNacional == null)
+                    if (continuarCodNacional)
                     {
-                        codNacional = _service.GetCodigoNacionalMedicamento(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
+                        string foundAsociado = null;
+                        var codNacional = _service.GetCodigoNacionalSinonimo(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
                         if (codNacional == null)
-                            codNacional = Convert.ToInt64(_keyData.Substring(3, _keyData.Length - 4));
-                    }
+                        {
+                            codNacional = _service.GetCodigoNacionalMedicamento(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
+                            if (codNacional == null)
+                                codNacional = Convert.ToInt64(_keyData.Substring(3, _keyData.Length - 4));
+                        }
 
-                    var asociado = _service.GetAsociado(Convert.ToInt64(codNacional));
-                    var mostrarVentana = false;
-                    if (asociado != null)
-                        mostrarVentana = true;
-                    else
-                    {
-                        var articulo = _service.GetArticulo(Convert.ToInt64(codNacional));
-                        if (articulo != null)
+                        var asociado = _service.GetAsociado(Convert.ToInt64(codNacional));
+                        var mostrarVentana = false;
+                        if (asociado != null)
+                        {
                             mostrarVentana = true;
+                            foundAsociado = asociado;
+                        }
                         else
                         {
-                            var categ = _service.GetCategorizacion();
-                            if (categ != null)
+                            var articulo = _service.GetArticulo(Convert.ToInt64(codNacional));
+                            if (articulo != null)
+                            {
                                 mostrarVentana = true;
+                                foundAsociado = articulo;
+                            }                                
+                            else
+                            {
+                                var categ = _service.GetCategorizacion();
+                                if (categ != null)
+                                {
+                                    var asociadoCodNacional = _service.GetAnyAsociadoMedicamento(Convert.ToInt64(codNacional));
+                                    if (asociadoCodNacional != null)
+                                    {
+                                        mostrarVentana = true;
+                                        foundAsociado = asociadoCodNacional;
+                                    }
+                                }                                                                    
+                                else
+                                {
+                                    var asociadoCodNacional = _service.GetAsociadoCategorizacion(Convert.ToInt64(codNacional));                                    
+                                    if (asociadoCodNacional != null)
+                                    {
+                                        mostrarVentana = true;
+                                        foundAsociado = asociadoCodNacional;
+                                    }
+                                }
+                            }
                         }
-                    }
 
-                    if (mostrarVentana)
-                    {
-                        var asociadoCodNacional = _service.GetAsociadoCategorizacion(Convert.ToInt64(codNacional)) ??
-                                _service.GetAnyAsociadoMedicamento(Convert.ToInt64(codNacional));
-                        if (asociadoCodNacional != null)
-                        {
+                        if (mostrarVentana && foundAsociado != null)
+                        {                            
                             SendKey(Key.Enter);
                             lanzarBrowserWindow = true;
-                            _service.UrlNavegar = _service.Url.Replace("codigo", "cn" + asociadoCodNacional.ToString() + "/" + _service.Mostrador);
+                            _service.UrlNavegar = _service.Url.Replace("codigo", "cn" + foundAsociado + "/" + _service.Mostrador);                            
                         }
                     }
+                    
                 }
 
                 if (lanzarBrowserWindow)
                 {
-                    var viewer = InfoBrowser;
-                    viewer.browser.Navigate(_service.UrlNavegar);
-                    viewer.Visibility = Visibility.Visible;
-                    viewer.WindowState = WindowState.Maximized;
-                    viewer.Topmost = true;
-                    viewer.Show();
+                    // Mostramos el browser con información de la base de datos
+                    //OpenWindowBrowser(InfoBrowser, _service.UrlNavegar);                    
+                    _keyData = "";
+                    return true;
+
                 }
             }
 
             // Limpieamos los datos de las teclas almacenados en _keyData
             _keyData = "";
+            return false;
+
         }
 
         /// <summary>
@@ -396,14 +427,14 @@ namespace Lector.Sharp.Wpf
         /// Abre una ventana que contiene un browser
         /// </summary>
         /// <param name="browser">Ventana con un browser</param>
-        private void OpenWindowBrowser(BrowserWindow browser)
+        private void OpenWindowBrowser(BrowserWindow browser, string url)
         {
-            browser.browser.Navigate(_service.UrlNavegarCustom);
+            browser.Browser.Navigate(url);
             browser.Visibility = Visibility.Visible;
-            browser.WindowState = WindowState.Maximized;
-            //_window.SetWindowPos(this, LowLevelWindowsListener.HWND.TopMost, 0, 0, 0, 0, LowLevelWindowsListener.SetWindowPosFlags.SWP_NOMOVE | LowLevelWindowsListener.SetWindowPosFlags.SWP_NOSIZE);
+            browser.WindowState = WindowState.Maximized;            
             browser.Topmost = true;
-            browser.Show();
+            browser.Activate();
+            browser.Show();            
         }
 
         /// <summary>

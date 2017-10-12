@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="Información" Loaded="winBrowser_Loaded" Unloaded="winBrowser_Unloaded" WindowStartupLocation="CenterScreen" Closed="winBrowser_Closed" Icon="sisfarma-logo.ico">
     <Grid>
-        <WebBrowser x:Name="browser"/>
+        <WebBrowser x:Name="Browser"/>
 
     </Grid>
 </Window>

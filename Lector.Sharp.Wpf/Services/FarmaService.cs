@@ -33,34 +33,20 @@ namespace Lector.Sharp.Wpf.Services
                 var pathDatabaseServer = ConfigurationManager.AppSettings["Database.Server"];
                 var pathDatabseCatalog = ConfigurationManager.AppSettings["Database.Catalog"];
 
-                Url = File.Exists(pathUrlInformacionRemoto)
-                    ? new StreamReader(pathUrlInformacionRemoto).ReadLine()
-                    : string.Empty;
+                Url = new StreamReader(pathUrlInformacionRemoto).ReadLine();
+                UrlMensajes = new StreamReader(pathUrlMensajesRemoto).ReadLine();
+                UrlNavegarCustom = new StreamReader(pathUrlCustom).ReadLine();
+                DatabaseServer = new StreamReader(pathDatabaseServer).ReadLine();
+                DatabaseCatalog = new StreamReader(pathDatabseCatalog).ReadLine();
 
+                // Único archivo que puede no existir
                 Mostrador = File.Exists(pathMostradorVc)
                     ? new StreamReader(pathMostradorVc).ReadLine()
-                    : "1";
-
-                UrlMensajes = File.Exists(pathUrlMensajesRemoto)
-                    ? new StreamReader(pathUrlMensajesRemoto).ReadLine()
-                    : string.Empty;
-
-                UrlNavegarCustom = File.Exists(pathUrlCustom)
-                    ? new StreamReader(pathUrlCustom).ReadLine()
-                    : string.Empty;
-
-                DatabaseServer = File.Exists(pathDatabaseServer)
-                    ? new StreamReader(pathDatabaseServer).ReadLine()
-                    : string.Empty;
-
-                DatabaseCatalog = File.Exists(pathDatabseCatalog)
-                    ? new StreamReader(pathDatabseCatalog).ReadLine()
-                    : string.Empty;
-            }
-            catch (Exception)
+                    : "1";                
+            } catch (IOException ex)
             {
-                LeerFicherosConfiguracion();
-            }            
+                throw new IOException("Error al leer archivos de configuración");                
+            }
         }
 
         /// <summary>
@@ -163,8 +149,8 @@ namespace Lector.Sharp.Wpf.Services
         /// Obtiene un asociado en la ventas por el código nacional.
         /// </summary>
         /// <param name="codNacional"></param>
-        /// <returns>Asociado</returns>
-        public asociados_cruzadas GetAsociado(long codNacional)
+        /// <returns>Identificador de Asociado</returns>
+        public string GetAsociado(long codNacional)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
@@ -176,7 +162,7 @@ namespace Lector.Sharp.Wpf.Services
                                  where v.eliminado == false && v.activo == true
                                  select a).ToList();
 
-                    return query.Count != 0 ? query.First() : null;                   
+                    return query.Count != 0 ? query.First().asociado : null;                   
                 }
                 catch (InvalidOperationException)
                 {
@@ -190,7 +176,7 @@ namespace Lector.Sharp.Wpf.Services
         /// </summary>
         /// <param name="codNacional"></param>
         /// <returns></returns>
-        public listas_articulos GetArticulo(long codNacional)
+        public string GetArticulo(long codNacional)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
@@ -201,7 +187,7 @@ namespace Lector.Sharp.Wpf.Services
                         v => v.id, a => (decimal)a.idVentaCruzada, (v, a) => new { Ventas = v, Asociado = a })
                     .Join(db.listas_articulos.Where(la => la.cod_articulo == codNacional), 
                         va => va.Asociado.asociado, la => la.cod_lista.ToString(), (va, la) => new { Articulo = la })
-                    .Select(x => x.Articulo).Take(1).Single();
+                    .Select(x => x.Articulo).Take(1).Single().cod_articulo.ToString();
                 }
                 catch (InvalidOperationException)
                 {
@@ -234,7 +220,7 @@ namespace Lector.Sharp.Wpf.Services
         /// </summary>
         /// <param name="codNacional"></param>
         /// <returns></returns>
-        public long? GetAsociadoCategorizacion(long codNacional)
+        public string GetAsociadoCategorizacion(long codNacional)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
@@ -245,7 +231,7 @@ namespace Lector.Sharp.Wpf.Services
                                       "WHERE c.cod_nacional = @codNacional AND v.tipoAsociado = 'Por Familia/Subfamilia' " +
                                           "AND v.eliminado = 0 AND v.activo = 1 LIMIT 0,1";
                 var query = db.Database.SqlQuery<long>(sql, new MySqlParameter("@codNacional", codNacional)).ToArray();
-                return query.Length != 0 ? query[0] as long? : null;                                
+                return query.Length != 0 ? query[0].ToString() : null;                                
             }
         }
 
@@ -254,7 +240,7 @@ namespace Lector.Sharp.Wpf.Services
         /// </summary>
         /// <param name="codNacional"></param>
         /// <returns>Código nacional</returns>
-        public long? GetAnyAsociadoMedicamento(long codNacional)
+        public string GetAnyAsociadoMedicamento(long codNacional)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
@@ -265,7 +251,7 @@ namespace Lector.Sharp.Wpf.Services
                                 "WHERE m.cod_nacional = @codNacional AND (v.tipoAsociado = 'Por Familia/Subfamilia' OR v.tipoAsociado = 'Por Laboratorio') " +
                                         "AND v.eliminado = 0 AND v.activo = 1 LIMIT 0,1";
                 var query = db.Database.SqlQuery<long>(sql, new MySqlParameter("@codNacional", codNacional)).ToArray();
-                return query.Length != 0 ? query[0] as long? : null;
+                return query.Length != 0 ? query[0].ToString() : null;
             }
         }
     

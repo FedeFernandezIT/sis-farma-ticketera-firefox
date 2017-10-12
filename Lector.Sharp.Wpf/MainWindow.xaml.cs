@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Deployment.Application;
 using Microsoft.Win32;
 using System.IO;
+using MySql.Data.MySqlClient;
 
 namespace Lector.Sharp.Wpf
 {
@@ -181,8 +182,8 @@ namespace Lector.Sharp.Wpf
                 {
                     // Si presionamos SHIFT + F1
                     if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F1)
-                        // Abrimos una ventana con la web personalizada.
-                        OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom);                    
+                        // Abrimos una ventana con la web personalizada.                        
+                        OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom, InfoBrowser);                    
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
@@ -201,16 +202,19 @@ namespace Lector.Sharp.Wpf
                 {
                     if (ProccessEnterKey())
                     {
-                        OpenWindowBrowser(InfoBrowser, _service.UrlNavegar);
+                        OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);
                     }                    
+                }
+            }
+            catch (MySqlException mysqle)
+            {
+                if (!mysqle.Message.Contains("Timeout"))
+                {
+                    MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
-                if (ex is MySql.Data.MySqlClient.MySqlException)
-                {
-
-                }
                 MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
@@ -427,14 +431,16 @@ namespace Lector.Sharp.Wpf
         /// Abre una ventana que contiene un browser
         /// </summary>
         /// <param name="browser">Ventana con un browser</param>
-        private void OpenWindowBrowser(BrowserWindow browser, string url)
+        private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
+            hidden.Topmost = false;
+            browser.Topmost = true;
+            hidden.Topmost = true;
             browser.Browser.Navigate(url);
             browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;            
-            browser.Topmost = true;
+            browser.Show();
             browser.Activate();
-            browser.Show();            
         }
 
         /// <summary>

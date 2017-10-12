@@ -18,7 +18,7 @@ namespace Lector.Sharp.Wpf.Models
         private static string BuildConnectionString(string dataSource, string database)
         {
             // Construcción de connectionString
-            var connectionString = $"server={dataSource};user id=fisiotes_fede;password=tGLjuIUr9A;persistsecurityinfo=True;database={database};default command timeout=1; Allow Zero Datetime=True; Convert Zero Datetime=True";
+            var connectionString = $"server={dataSource};user id=fisiotes_fede;password=tGLjuIUr9A;persistsecurityinfo=True;database={database}; Allow Zero Datetime=True; Convert Zero Datetime=True";
             var metadata = "res://*/Models.SisFarmaModel.csdl|res://*/Models.SisFarmaModel.ssdl|res://*/Models.SisFarmaModel.msl";
             var provider = "MySql.Data.MySqlClient";
             // Build the connection string from the provided datasource and database

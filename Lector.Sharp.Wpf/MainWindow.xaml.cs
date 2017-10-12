@@ -150,7 +150,7 @@ namespace Lector.Sharp.Wpf
 
         private void notificactionInfoMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SisFarma Application\nsisfarma.es");
+            MessageBox.Show("SisFarma Applicación\nsisfarma.es");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -193,10 +193,9 @@ namespace Lector.Sharp.Wpf
                     ProccessEnterKey();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Sólo seguimos capturando las entadas por teclado.
-                // No lanzamos la exception
+                MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }
@@ -219,6 +218,14 @@ namespace Lector.Sharp.Wpf
 
                 if (_keyData.Length >= 13)
                 {
+
+
+
+
+
+
+
+
                     _keyData = _keyData.Substring(_keyData.Length - 13);
                     noEntrar = _keyData.Substring(0, 4);
 
@@ -352,7 +359,9 @@ namespace Lector.Sharp.Wpf
                 {
                     var viewer = InfoBrowser;
                     viewer.browser.Navigate(_service.UrlNavegar);
+                    viewer.Visibility = Visibility.Visible;
                     viewer.WindowState = WindowState.Maximized;
+                    viewer.Topmost = true;
                     viewer.Show();
                 }
             }

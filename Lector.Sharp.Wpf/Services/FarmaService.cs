@@ -152,7 +152,8 @@ namespace Lector.Sharp.Wpf.Services
             {
                 if (db.medicamentos.Any(med => med.cod_barras.StartsWith(filter)))
                 {
-                    return db.medicamentos.First(med => med.cod_barras.StartsWith(filter)).cod_nacional;
+                    var result =  db.medicamentos.First(med => med.cod_barras.StartsWith(filter));                    
+                    return result.cod_nacional;
                 }
                 return null;
             }

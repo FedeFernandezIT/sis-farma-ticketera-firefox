@@ -311,8 +311,7 @@ namespace Lector.Sharp.Wpf
                 {
                     var cliente = _service.GetCliente(_keyData);
                     if (cliente != null)
-                    {
-                        SendKey(Key.Enter);
+                    {                     
                         lanzarBrowserWindow = true;
                         _service.UrlNavegar = _service.Url.Replace("codigo", cliente.cod.ToString()) + "/" + _service.Mostrador;
                     }
@@ -320,8 +319,7 @@ namespace Lector.Sharp.Wpf
                     {
                         var trabajador = _service.GetTrabajador(_keyData);
                         if (trabajador != null)
-                        {
-                            SendKey(Key.Enter);
+                        {                     
                             lanzarBrowserWindow = true;
                             _service.UrlNavegar = _service.UrlMensajes.Replace("codigo", trabajador.id.ToString());
                         }
@@ -380,8 +378,7 @@ namespace Lector.Sharp.Wpf
                         }
 
                         if (mostrarVentana && foundAsociado != null)
-                        {                            
-                            SendKey(Key.Enter);
+                        {                                                        
                             lanzarBrowserWindow = true;
                             _service.UrlNavegar = _service.Url.Replace("codigo", "cn" + foundAsociado + "/" + _service.Mostrador);                            
                         }
@@ -394,6 +391,7 @@ namespace Lector.Sharp.Wpf
                     // Mostramos el browser con información de la base de datos
                     //OpenWindowBrowser(InfoBrowser, _service.UrlNavegar);                    
                     _keyData = "";
+                    SendKeyEnter();                    
                     return true;
 
                 }
@@ -444,22 +442,12 @@ namespace Lector.Sharp.Wpf
         }
 
         /// <summary>
-        /// Simula presionar una tecla
-        /// </summary>
-        /// <param name="key"></param>
-        public static void SendKey(Key key)
+        /// Simula presionar la tecla ENTER
+        /// </summary>        
+        public static void SendKeyEnter()
         {
-            if (Keyboard.PrimaryDevice != null)
-            {
-                if (Keyboard.PrimaryDevice.ActiveSource != null)
-                {
-                    var e = new KeyEventArgs(Keyboard.PrimaryDevice, Keyboard.PrimaryDevice.ActiveSource, 0, key)
-                    {
-                        RoutedEvent = Keyboard.KeyDownEvent
-                    };
-                    InputManager.Current.ProcessInput(e);                    
-                }
-            }
+            // Utilizar SendWait para compatibilidad con WPF
+            System.Windows.Forms.SendKeys.SendWait("{ENTER}");            
         }
     }
 }

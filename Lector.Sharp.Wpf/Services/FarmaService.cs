@@ -54,11 +54,18 @@ namespace Lector.Sharp.Wpf.Services
         /// </summary>
         /// <returns>códigos de barras formateados</returns>
         public string[] GetCodigoBarraMedicamentos()
+
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                return db.medicamentos.Where(med => med.cod_barras != null).Distinct()
-                    .Select(med => med.cod_barras.Substring(0, 3)).ToArray();
+
+                var sql = "SELECT GROUP_CONCAT(DISTINCT SUBSTRING(cod_barras, 1, 3) SEPARATOR ';') AS codBarras FROM medicamentos WHERE NOT cod_barras IS NULL";
+                var query = db.Database.SqlQuery<string>(sql).ToList();
+                if (query.Count == 1)
+                {
+                    return query[0].Split(';');
+                }
+                return new string[0];                
             }
         }
 
@@ -70,40 +77,49 @@ namespace Lector.Sharp.Wpf.Services
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                return db.sinonimos.Where(sin => sin.cod_barras != null).Distinct()
-                    .Select(sin => sin.cod_barras.Substring(0, 3)).ToArray();
+                var sql = "SELECT GROUP_CONCAT(DISTINCT SUBSTRING(cod_barras, 1, 3) SEPARATOR ';') AS codBarras FROM sinonimos WHERE NOT cod_barras IS NULL";
+                var query = db.Database.SqlQuery<string>(sql).ToList();
+                if (query.Count == 1)
+                {
+                    return query[0].Split(';');
+                }
+                return new string[0];
             }
         }
 
         /// <summary>
-        /// Obtiene un cliente con una determinada tarjeta
+        /// Obtiene el código de un cliente con una determinada tarjeta
         /// </summary>
         /// <param name="tarjeta"></param>
         /// <returns></returns>
-        public clientes GetCliente(string tarjeta)
+        public long? GetCliente(string tarjeta)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                if (db.clientes.Any(cli => cli.tarjeta == tarjeta))
+                var sql = "SELECT cod FROM clientes WHERE tarjeta = '" + tarjeta + "'";
+                var query = db.Database.SqlQuery<long>(sql).ToList();
+                if (query.Count != 0)
                 {
-                    return db.clientes.First(cli => cli.tarjeta == tarjeta);
+                    return query[0];
                 }
                 return null;
             }
         }
 
         /// <summary>
-        /// Obtiene un trabajador con una determinada tarjeta
+        /// Obtiene el identificador de un trabajador con una determinada tarjeta
         /// </summary>
         /// <param name="tarjeta"></param>
         /// <returns></returns>
-        public trabajador GetTrabajador(string tarjeta)
+        public long? GetTrabajador(string tarjeta)
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                if (db.trabajador.Any(tr => tr.tarjeta == tarjeta))
+                var sql = "SELECT id FROM trabajador WHERE tarjeta = '" + tarjeta + "'";
+                var query = db.Database.SqlQuery<long>(sql).ToList();
+                if (query.Count != 0)
                 {
-                    return db.trabajador.First(tr => tr.tarjeta == tarjeta);
+                    return query[0];
                 }
                 return null;
             }
@@ -118,12 +134,13 @@ namespace Lector.Sharp.Wpf.Services
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                if (db.sinonimos.Any(sin => sin.cod_barras.StartsWith(filter)))
+                var sql = "SELECT cod_nacional FROM sinonimos WHERE SUBSTRING(cod_barras, 1, 12) LIKE '" + filter + "%'";
+                var query = db.Database.SqlQuery<string>(sql).ToList();
+                if (query.Count != 0)
                 {
-                    var strCodNacional = db.sinonimos.First(sin => sin.cod_barras.StartsWith(filter)).cod_nacional;
-                    return Convert.ToInt64(strCodNacional);
+                    return Convert.ToInt64(query[0]);
                 }
-                return null;
+                return null;                
             }            
         }
 
@@ -136,10 +153,11 @@ namespace Lector.Sharp.Wpf.Services
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                if (db.medicamentos.Any(med => med.cod_barras.StartsWith(filter)))
+                var sql = "SELECT cod_nacional FROM medicamentos WHERE SUBSTRING(cod_barras, 1, 12) LIKE '" + filter + "%'";
+                var query = db.Database.SqlQuery<long>(sql).ToList();                
+                if (query.Count != 0)
                 {
-                    var result =  db.medicamentos.First(med => med.cod_barras.StartsWith(filter));                    
-                    return result.cod_nacional;
+                    return query[0];
                 }
                 return null;
             }
@@ -154,20 +172,12 @@ namespace Lector.Sharp.Wpf.Services
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                try
-                {
-                    var query = (from v in db.ventas_cruzadas
-                                 from a in db.asociados_cruzadas
-                                 where v.id == (decimal)a.idVentaCruzada
-                                 where v.eliminado == false && v.activo == true
-                                 select a).ToList();
-
-                    return query.Count != 0 ? query.First().asociado : null;                   
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }                
+                var sql = "SELECT a.asociado FROM ventas_cruzadas v " +
+                            "INNER JOIN asociados_cruzadas a ON a.idVentaCruzada = v.id " +
+                            "WHERE a.asociado = '" + codNacional + "' " +
+                            "AND v.eliminado = 0 AND v.activo = 1 LIMIT 0,1";
+                var query = db.Database.SqlQuery<string>(sql).ToList();                    
+                return query.Count != 0 ? query.First() : null;                               
             }
         }
 
@@ -180,38 +190,32 @@ namespace Lector.Sharp.Wpf.Services
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                try
-                {
-                    return db.ventas_cruzadas.Where(v => v.eliminado == false && v.activo == true && v.tipoAsociado == "Por Listas")
-                    .Join(db.asociados_cruzadas,
-                        v => v.id, a => (decimal)a.idVentaCruzada, (v, a) => new { Ventas = v, Asociado = a })
-                    .Join(db.listas_articulos.Where(la => la.cod_articulo == codNacional), 
-                        va => va.Asociado.asociado, la => la.cod_lista.ToString(), (va, la) => new { Articulo = la })
-                    .Select(x => x.Articulo).Take(1).Single().cod_articulo.ToString();
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }
+                var sql = "SELECT la.cod_articulo AS asociado " +
+                            "FROM ventas_cruzadas v " +
+                            "INNER JOIN asociados_cruzadas a ON a.idVentaCruzada = v.id " +
+                            "INNER JOIN listas_articulos la ON la.cod_lista = a.asociado " +
+                            "WHERE la.cod_articulo = '" + codNacional + "' AND v.tipoAsociado = 'Por Listas' " +
+                            "AND v.eliminado = 0 AND v.activo = 1 LIMIT 0,1";
+                var query = db.Database.SqlQuery<int>(sql).ToList();
+                return query.Count != 0 ? query[0].ToString() : null;                
             }
         }
 
         /// <summary>
-        /// Obtiene la primera categorización
+        /// Obtiene el cdódigo nacional de la primera categorización
         /// </summary>
         /// <returns></returns>
-        public categorizacion GetCategorizacion()
+        public long? GetCategorizacion()
         {
             using (var db = new SisFarmaEntities(DatabaseServer, DatabaseCatalog))
             {
-                try
+                var sql = "SELECT cod_nacional FROM categorizacion LIMIT 0,1";
+                var query = db.Database.SqlQuery<long>(sql).ToList();
+                if (query.Count != 0)
                 {
-                    return db.categorizacion.First();
+                    return query[0];
                 }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }
+                return null;
             }
         }
 

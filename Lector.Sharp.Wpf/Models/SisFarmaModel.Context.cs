@@ -25,13 +25,5 @@ namespace Lector.Sharp.Wpf.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<clientes> clientes { get; set; }
-        public virtual DbSet<medicamentos> medicamentos { get; set; }
-        public virtual DbSet<sinonimos> sinonimos { get; set; }
-        public virtual DbSet<trabajador> trabajador { get; set; }
-        public virtual DbSet<asociados_cruzadas> asociados_cruzadas { get; set; }
-        public virtual DbSet<ventas_cruzadas> ventas_cruzadas { get; set; }
-        public virtual DbSet<listas_articulos> listas_articulos { get; set; }
-        public virtual DbSet<categorizacion> categorizacion { get; set; }
     }
 }

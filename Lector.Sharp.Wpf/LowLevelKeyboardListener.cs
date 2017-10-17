@@ -325,17 +325,5 @@ namespace Lector.Sharp.Wpf
         {
             KeyPressed = key;
         }
-    }
-
-    //public static unsafe void Main()
-    //{
-    //    int[] data = Enumerable.Range(1, 1000000);
-    //    int size = data.Length * sizeof(int);
-    //    byte[] dst = new byte[size];
-    // fixed (byte* pd = dst) { fixed (int* ps = data) { CopyMemory(pd, ps, size); } }
-    //    Console.WriteLine("10 data result : {0}", BitConverter.ToString(dst, 0, 10));
-    //    Console.WriteLine("Is assuming equals : {0}", BitConverter.ToInt32(dst, 0) == data[0] &&
-    //                              BitConverter.ToInt32(dst, dst.GetUpperBound(0) - sizeof(int)) == data[data.GetUpperBound(0)]);
-    //    Console.ReadKey();
-    //}
+    }   
 }

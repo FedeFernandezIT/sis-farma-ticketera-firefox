@@ -130,24 +130,6 @@
       <DependentUpon>BrowserWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LowLevelWindowsListener.cs" />
-    <Compile Include="Models\asociados_cruzadas.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\categorizacion.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\clientes.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\listas_articulos.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\medicamentos.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sinonimos.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\SisFarmaContext.cs" />
     <Compile Include="Models\SisFarmaModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -163,12 +145,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SisFarmaModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\trabajador.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\ventas_cruzadas.cs">
-      <DependentUpon>SisFarmaModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Services\FarmaService.cs" />
     <Page Include="BrowserWindow.xaml">

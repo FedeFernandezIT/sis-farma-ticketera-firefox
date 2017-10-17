@@ -202,6 +202,8 @@ namespace Lector.Sharp.Wpf
                 {
                     if (ProccessEnterKey())
                     {
+                        // Si es proceso de búsqueda en la base de datos es exitoso
+                        // mostramos los resultados
                         OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);
                     }                    
                 }
@@ -309,11 +311,14 @@ namespace Lector.Sharp.Wpf
 
                 if (continuar)
                 {
+
+
+
                     var cliente = _service.GetCliente(_keyData);
                     if (cliente != null)
                     {                     
                         lanzarBrowserWindow = true;
-                        _service.UrlNavegar = _service.Url.Replace("codigo", cliente.cod.ToString()) + "/" + _service.Mostrador;
+                        _service.UrlNavegar = _service.Url.Replace("codigo", cliente.ToString()) + "/" + _service.Mostrador;
                     }
                     else
                     {
@@ -321,7 +326,7 @@ namespace Lector.Sharp.Wpf
                         if (trabajador != null)
                         {                     
                             lanzarBrowserWindow = true;
-                            _service.UrlNavegar = _service.UrlMensajes.Replace("codigo", trabajador.id.ToString());
+                            _service.UrlNavegar = _service.UrlMensajes.Replace("codigo", trabajador.ToString());
                         }
                     }
                 }
@@ -388,8 +393,8 @@ namespace Lector.Sharp.Wpf
 
                 if (lanzarBrowserWindow)
                 {
-                    // Mostramos el browser con información de la base de datos
-                    //OpenWindowBrowser(InfoBrowser, _service.UrlNavegar);                    
+                    // Mostramos el browser con información de la base de datos  
+                    // Limpieamos los datos de las teclas almacenados en _keyData
                     _keyData = "";
                     SendKeyEnter();                    
                     return true;

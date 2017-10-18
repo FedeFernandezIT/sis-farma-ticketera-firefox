@@ -210,14 +210,14 @@ namespace Lector.Sharp.Wpf
             }
             catch (MySqlException mysqle)
             {
-                if (!mysqle.Message.Contains("Timeout"))
-                {
-                    MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                //if (!mysqle.Message.Contains("Timeout"))
+                //{
+                //    MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //}
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show("Ha ocurrido un error. Comuníquese con el Administrador.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }

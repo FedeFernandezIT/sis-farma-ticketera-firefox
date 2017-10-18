@@ -182,8 +182,12 @@ namespace Lector.Sharp.Wpf
                 {
                     // Si presionamos SHIFT + F1
                     if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F1)
-                        // Abrimos una ventana con la web personalizada.                        
-                        OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom, InfoBrowser);                    
+                    {   // Si La ventana de información detallada está abierta la cerramos
+                        if (InfoBrowser.IsVisible)
+                            CloseWindowBrowser(InfoBrowser);
+                        // Abrimos una ventana con la web personalizada.    
+                        OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom, InfoBrowser);
+                    }
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
@@ -198,14 +202,14 @@ namespace Lector.Sharp.Wpf
                         StoreKey(e.KeyPressed);
                     }
                 }
-                else
+                else if (!CustomBrowser.IsVisible && ProccessEnterKey())
                 {
-                    if (ProccessEnterKey())
-                    {
+                    //if (ProccessEnterKey())
+                    //{
                         // Si es proceso de búsqueda en la base de datos es exitoso
                         // mostramos los resultados
                         OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);
-                    }                    
+                    //}                    
                 }
             }
             catch (MySqlException mysqle)

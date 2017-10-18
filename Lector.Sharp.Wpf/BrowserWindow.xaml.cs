@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -36,8 +37,7 @@ namespace Lector.Sharp.Wpf
 
         private void winBrowser_Loaded(object sender, RoutedEventArgs e)
         {
-            ColocarEnTop(true);
-            WindowState = WindowState.Maximized;            
+            ColocarEnTop(true);            
         }
 
         private void winBrowser_Unloaded(object sender, RoutedEventArgs e)
@@ -55,5 +55,48 @@ namespace Lector.Sharp.Wpf
             _closed = true;
         }
         
+
+        private void WinBrowser_SourceInitialized(object sender, EventArgs e)
+        {
+            WindowInteropHelper helper = new WindowInteropHelper(this);
+            HwndSource source = HwndSource.FromHwnd(helper.Handle);
+            source.AddHook(WndProc);
+        }
+
+        const int WM_SYSCOMMAND = 0x0112;
+        const int SC_MOVE = 0xF010;
+        const int SC_RESTORE = 0xF120;
+
+        /// <summary>
+        /// Previene ciertos commandos sobre la ventana
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="msg"></param>
+        /// <param name="wParam"></param>
+        /// <param name="lParam"></param>
+        /// <param name="handled"></param>
+        /// <returns></returns>
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                case WM_SYSCOMMAND:
+                    int command = wParam.ToInt32() & 0xfff0;
+                    if (command == SC_MOVE)
+                    {
+                        // Previene que el usuario mueva la ventana
+                        handled = true;
+                    }
+                    else if (command == SC_RESTORE)
+                    {
+                        // Previene restaurar la ventana a su tamaño original
+                        handled = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return IntPtr.Zero;
+        }
     }
 }

@@ -203,13 +203,15 @@ namespace Lector.Sharp.Wpf
                     }
                 }
                 else if (!CustomBrowser.IsVisible && ProccessEnterKey())
+                {                    
+                    // Si es proceso de búsqueda en la base de datos es exitoso
+                    // mostramos los resultados
+                    OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);                 
+                }
+                else
                 {
-                    //if (ProccessEnterKey())
-                    //{
-                        // Si es proceso de búsqueda en la base de datos es exitoso
-                        // mostramos los resultados
-                        OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);
-                    //}                    
+                    // Siempre que se presiona ENTER se limpia _keyData
+                    _keyData = string.Empty;
                 }
             }
             catch (MySqlException mysqle)

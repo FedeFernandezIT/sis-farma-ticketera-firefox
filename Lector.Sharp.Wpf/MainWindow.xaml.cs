@@ -202,12 +202,21 @@ namespace Lector.Sharp.Wpf
                         StoreKey(e.KeyPressed);
                     }
                 }
-                else if (!CustomBrowser.IsVisible && ProccessEnterKey())
-                {                    
-                    // Si es proceso de búsqueda en la base de datos es exitoso
-                    // mostramos los resultados
-                    OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);                 
-                }
+                else if (!CustomBrowser.IsVisible && !string.IsNullOrEmpty(_keyData))
+                {
+                    var enteredNumbers = _keyData;                    
+                    Task.Run(() => ProccessEnterKey(enteredNumbers)).ContinueWith(t =>
+                    {
+                        if (t.Result)
+                        {
+                            OpenWindowBrowser(InfoBrowser, _service.UrlNavegar, CustomBrowser);
+                        }
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
+
+                    // Limpiamos _keyData para otro proceso.
+                    _keyData = string.Empty;
+                    SendKeyEnter();
+                }                                                        
                 else
                 {
                     // Siempre que se presiona ENTER se limpia _keyData
@@ -231,34 +240,35 @@ namespace Lector.Sharp.Wpf
         /// <summary>
         /// Procesa los _keyData para buscar datos en la base de datos
         /// </summary>
-        private bool ProccessEnterKey()
+        private bool ProccessEnterKey(string enteredNumbers)
         {
             long number = 0;
             // Si el valor almacenado en _keyData en numérico y con longitud superior a 4
-            if (long.TryParse(_keyData, out number) && _keyData.Length >= 4)
+
+            if (long.TryParse(enteredNumbers, out number) && enteredNumbers.Length >= 4)
             {
 
                 var lanzarBrowserWindow = false;
                 var noEntrar = string.Empty;
                 var continuar = false;
                 var continuarCodNacional = false;
-                var keyDataAux = _keyData;
+                var enteredNumbersAux = enteredNumbers;
 
-                if (_keyData.Length >= 13)
+                if (enteredNumbers.Length >= 13)
                 {
-                    _keyData = _keyData.Substring(_keyData.Length - 13);
-                    noEntrar = _keyData.Substring(0, 4);
+                    enteredNumbers = enteredNumbers.Substring(enteredNumbers.Length - 13);
+                    noEntrar = enteredNumbers.Substring(0, 4);
 
                     if (Array.Exists(new[] { "1010", "1111", "0000", "9902", "9900", "9901", "9903", "9904", "9905", "9906", "9907", "9908", "9909", "9910", "9911", "9912", "9913", "9915", "9916", "9917", "9918", "9919", "9920", "1001", "2014", "2015", "2016", "2017", "2018" }, x => x.Equals(noEntrar)))
                         continuar = true;
                     else
                     {
-                        noEntrar = _keyData.Substring(0, 7);
+                        noEntrar = enteredNumbers.Substring(0, 7);
                         if (noEntrar.Equals("8470000"))
                             continuar = true;
                         else
                         {
-                            noEntrar = _keyData.Substring(0, 3);
+                            noEntrar = enteredNumbers.Substring(0, 3);
                             if (Array.Exists(_service.GetCodigoBarraMedicamentos(), x => x.Equals(noEntrar)))
                                 continuarCodNacional = true;
                             else if (Array.Exists(_service.GetCodigoBarraSinonimos(), x => x.Equals(noEntrar)))
@@ -267,60 +277,57 @@ namespace Lector.Sharp.Wpf
                     }
                 }
 
-                if (_keyData.Length >= 12 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 12 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 12);
-                    noEntrar = _keyData.Substring(0, 4);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 12);
+                    noEntrar = enteredNumbers.Substring(0, 4);
                     if ("1111".Equals(noEntrar) || "0000".Equals(noEntrar))
                         continuar = true;
                 }
 
-                if (_keyData.Length >= 10 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 10 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 10);
-                    noEntrar = _keyData.Substring(0, 4);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 10);
+                    noEntrar = enteredNumbers.Substring(0, 4);
                     if ("1111".Equals(noEntrar) || "1930".Equals(noEntrar))
                         continuar = true;
                 }
 
-                if (_keyData.Length >= 7 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 7 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 7);
-                    noEntrar = _keyData.Substring(0, 4);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 7);
+                    noEntrar = enteredNumbers.Substring(0, 4);
                     if (Array.Exists(new[] { "1000", "1001", "1002", "1003" }, x => x.Equals(noEntrar)))
                         continuar = true;
                 }
 
-                if (_keyData.Length >= 6 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 6 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 6);
-                    noEntrar = _keyData.Substring(0, 3);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 6);
+                    noEntrar = enteredNumbers.Substring(0, 3);
                     if (Array.Exists(new[] { "000", "001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "100", "101", "102", "103" }, x => x.Equals(noEntrar)))
                         continuar = true;
                 }
 
-                if (_keyData.Length >= 5 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 5 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 5);
-                    noEntrar = _keyData.Substring(0, 2);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 5);
+                    noEntrar = enteredNumbers.Substring(0, 2);
                     if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))
                         continuar = true;
                 }
 
-                if (_keyData.Length >= 4 && !continuar && !continuarCodNacional)
+                if (enteredNumbers.Length >= 4 && !continuar && !continuarCodNacional)
                 {
-                    _keyData = keyDataAux.Substring(_keyData.Length - 4);
-                    noEntrar = _keyData.Substring(0, 2);
+                    enteredNumbers = enteredNumbersAux.Substring(enteredNumbers.Length - 4);
+                    noEntrar = enteredNumbers.Substring(0, 2);
                     if (Array.Exists(new[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" }, x => x.Equals(noEntrar)))
                         continuar = true;
                 }
 
                 if (continuar)
                 {
-
-
-
-                    var cliente = _service.GetCliente(_keyData);
+                    var cliente = _service.GetCliente(enteredNumbers);
                     if (cliente != null)
                     {                     
                         lanzarBrowserWindow = true;
@@ -328,7 +335,7 @@ namespace Lector.Sharp.Wpf
                     }
                     else
                     {
-                        var trabajador = _service.GetTrabajador(_keyData);
+                        var trabajador = _service.GetTrabajador(enteredNumbers);
                         if (trabajador != null)
                         {                     
                             lanzarBrowserWindow = true;
@@ -341,12 +348,12 @@ namespace Lector.Sharp.Wpf
                     if (continuarCodNacional)
                     {
                         string foundAsociado = null;
-                        var codNacional = _service.GetCodigoNacionalSinonimo(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
+                        var codNacional = _service.GetCodigoNacionalSinonimo(enteredNumbers.Substring(0, enteredNumbers.Length > 12 ? 12 : enteredNumbers.Length));
                         if (codNacional == null)
                         {
-                            codNacional = _service.GetCodigoNacionalMedicamento(_keyData.Substring(0, _keyData.Length > 12 ? 12 : _keyData.Length));
+                            codNacional = _service.GetCodigoNacionalMedicamento(enteredNumbers.Substring(0, enteredNumbers.Length > 12 ? 12 : enteredNumbers.Length));
                             if (codNacional == null)
-                                codNacional = Convert.ToInt64(_keyData.Substring(3, _keyData.Length - 4));
+                                codNacional = Convert.ToInt64(enteredNumbers.Substring(3, enteredNumbers.Length - 4));
                         }
 
                         var asociado = _service.GetAsociado(Convert.ToInt64(codNacional));
@@ -399,19 +406,14 @@ namespace Lector.Sharp.Wpf
 
                 if (lanzarBrowserWindow)
                 {
-                    // Mostramos el browser con información de la base de datos  
-                    // Limpieamos los datos de las teclas almacenados en _keyData
-                    _keyData = "";
-                    SendKeyEnter();                    
+                    // Mostramos el browser con información de la base de datos                                          
+                    // Si es proceso de búsqueda en la base de datos es exitoso
+                    // mostramos los resultados                                        
                     return true;
 
                 }
             }
-
-            // Limpieamos los datos de las teclas almacenados en _keyData
-            _keyData = "";
             return false;
-
         }
 
         /// <summary>
@@ -442,6 +444,7 @@ namespace Lector.Sharp.Wpf
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
+
             hidden.Topmost = false;
             browser.Topmost = true;
             hidden.Topmost = true;
@@ -459,6 +462,12 @@ namespace Lector.Sharp.Wpf
         {
             // Utilizar SendWait para compatibilidad con WPF
             System.Windows.Forms.SendKeys.SendWait("{ENTER}");            
+        }
+
+        public static void SendKeyA()
+        {
+            // Utilizar SendWait para compatibilidad con WPF
+            System.Windows.Forms.SendKeys.SendWait("{A}");
         }
     }
 }

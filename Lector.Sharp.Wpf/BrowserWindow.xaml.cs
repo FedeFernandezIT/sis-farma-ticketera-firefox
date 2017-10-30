@@ -12,6 +12,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Lector.Sharp.Wpf.Extensions;
 
 namespace Lector.Sharp.Wpf
 {
@@ -37,7 +38,8 @@ namespace Lector.Sharp.Wpf
 
         private void winBrowser_Loaded(object sender, RoutedEventArgs e)
         {
-            ColocarEnTop(true);            
+            ColocarEnTop(true);
+            Browser.SuppressScriptErrors(true);
         }
 
         private void winBrowser_Unloaded(object sender, RoutedEventArgs e)

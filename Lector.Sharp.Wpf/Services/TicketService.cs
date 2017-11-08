@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Lector.Sharp.Wpf.Services
+{    
+
+    public class TicketService
+    {
+        public string TicketWindowUrl { get; set; }
+        public string TicketTerminal { get; set; }
+        public string TicketServer { get; set; }
+        public string TicketDatabase { get; set; }
+
+        public void InitializeConfiguration()
+        {
+            try
+            {
+                var pathTicketWindowUrl = ConfigurationManager.AppSettings["Ticket.Window.Url"];
+                var pathTicketTerminal = ConfigurationManager.AppSettings["Ticket.Terminal"];
+                var pathTicketServer = ConfigurationManager.AppSettings["Ticket.Server"];
+                var pathTicketDatabase = ConfigurationManager.AppSettings["Ticket.Database"];
+
+                TicketWindowUrl = new StreamReader(pathTicketWindowUrl).ReadLine();
+                TicketTerminal = new StreamReader(pathTicketTerminal).ReadLine();
+                TicketServer = new StreamReader(pathTicketServer).ReadLine();
+                TicketDatabase = new StreamReader(pathTicketDatabase).ReadLine();                                
+            }
+            catch (IOException ex)
+            {
+                throw new IOException("Error al leer archivos de configuración");
+            }
+        }         
+
+        public void Print()
+        {
+
+        }
+    }
+}

@@ -36,6 +36,7 @@ namespace Lector.Sharp.Wpf
         /// base de datos, lectura de archivos de configuración.
         /// </summary>
         private FarmaService _service;
+        private TicketService _ticketService;
 
         /// <summary>
         /// Almacena el valor de las teclas presionadas, específcamente números.
@@ -56,6 +57,11 @@ namespace Lector.Sharp.Wpf
         private BrowserWindow _customBrowser;
 
         /// <summary>
+        /// Window para mostrar una url personaliza y los datos de imprsión de turnos
+        /// </summary>
+        private TicketWindow _ticketWindow;
+
+        /// <summary>
         /// Icono de barra de tareas, gestiona la salida del programa
         /// </summary>
         private System.Windows.Forms.NotifyIcon _iconNotification;
@@ -67,10 +73,8 @@ namespace Lector.Sharp.Wpf
         {
             get
             {
-                if (_infoBrowser.IsClosed)
-                {
-                    _infoBrowser = new BrowserWindow();
-                }
+                if (_infoBrowser.IsClosed)                
+                    _infoBrowser = new BrowserWindow();                
                 return _infoBrowser;
             }
         }
@@ -82,11 +86,19 @@ namespace Lector.Sharp.Wpf
         {
             get
             {
-                if (_customBrowser.IsClosed)
-                {
-                    _customBrowser = new BrowserWindow();
-                }
+                if (_customBrowser.IsClosed)                
+                    _customBrowser = new BrowserWindow();                
                 return _customBrowser;
+            }
+        }
+
+        public TicketWindow TicketBrowser
+        {
+            get
+            {
+                if (_ticketWindow.IsClosed)
+                    _ticketWindow = new TicketWindow();
+                return _ticketWindow;
             }
         }
 
@@ -97,14 +109,19 @@ namespace Lector.Sharp.Wpf
                 RegisterStartup();
                 SupportHtml5();
                 InitializeComponent();
+
                 _service = new FarmaService();
+                _ticketService = new TicketService();
+                
                 _listener = new LowLevelKeyboardListener();
                 _infoBrowser = new BrowserWindow();
                 _customBrowser = new BrowserWindow();
+                _ticketWindow = new TicketWindow();
                 _window = new LowLevelWindowsListener();
 
                 // Leemos los archivos de configuración
                 _service.LeerFicherosConfiguracion();
+                _ticketService.InitializeConfiguration();
 
                 // Setamos el comportamiento de la aplicación al presionar una tecla
                 _listener.OnKeyPressed += _listener_OnKeyPressed;
@@ -129,6 +146,8 @@ namespace Lector.Sharp.Wpf
                 menu.MenuItems.Add(notificationQuitMenu);
                 _iconNotification.ContextMenu = menu;
                 _iconNotification.Visible = true;
+
+                TicketBrowser.Show();
             }
             catch (IOException ex)
             {

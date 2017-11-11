@@ -26,12 +26,13 @@ namespace Lector.Sharp.Wpf.Services
         {
             try
             {
-                var pathUrlInformacionRemoto = ConfigurationManager.AppSettings["Url.Informacion.Remoto"];
-                var pathUrlMensajesRemoto = ConfigurationManager.AppSettings["Url.Mensajes.Remoto"];
-                var pathUrlCustom = ConfigurationManager.AppSettings["Url.Custom"];
-                var pathMostradorVc = ConfigurationManager.AppSettings["Mostrador.Vc"];
-                var pathDatabaseServer = ConfigurationManager.AppSettings["Database.Server"];
-                var pathDatabseCatalog = ConfigurationManager.AppSettings["Database.Catalog"];
+                var pathBase = ConfigurationManager.AppSettings["Sisfarma.Path.Base"];
+                var pathUrlInformacionRemoto = Path.Combine(pathBase,ConfigurationManager.AppSettings["Url.Informacion.Remoto"]);
+                var pathUrlMensajesRemoto = Path.Combine(pathBase, ConfigurationManager.AppSettings["Url.Mensajes.Remoto"]);
+                var pathUrlCustom = Path.Combine(pathBase, ConfigurationManager.AppSettings["Url.Custom"]);
+                var pathMostradorVc = Path.Combine(pathBase,ConfigurationManager.AppSettings["Mostrador.Vc"]);
+                var pathDatabaseServer = Path.Combine(pathBase, ConfigurationManager.AppSettings["Database.Server"]);
+                var pathDatabseCatalog = Path.Combine(pathBase, ConfigurationManager.AppSettings["Database.Catalog"]);
 
                 Url = new StreamReader(pathUrlInformacionRemoto).ReadLine();
                 UrlMensajes = new StreamReader(pathUrlMensajesRemoto).ReadLine();

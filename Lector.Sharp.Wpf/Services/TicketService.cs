@@ -20,10 +20,11 @@ namespace Lector.Sharp.Wpf.Services
         {
             try
             {
-                var pathTicketWindowUrl = ConfigurationManager.AppSettings["Ticket.Window.Url"];
-                var pathTicketTerminal = ConfigurationManager.AppSettings["Ticket.Terminal"];
-                var pathTicketServer = ConfigurationManager.AppSettings["Ticket.Server"];
-                var pathTicketDatabase = ConfigurationManager.AppSettings["Ticket.Database"];
+                var dir = ConfigurationManager.AppSettings["Sisfarma.Path.Base"];
+                var pathTicketWindowUrl = Path.Combine(dir, ConfigurationManager.AppSettings["Ticket.Window.Url"]);
+                var pathTicketTerminal = Path.Combine(dir, ConfigurationManager.AppSettings["Ticket.Terminal"]);
+                var pathTicketServer = Path.Combine(dir, ConfigurationManager.AppSettings["Ticket.Server"]);
+                var pathTicketDatabase = Path.Combine(dir, ConfigurationManager.AppSettings["Ticket.Database"]);
 
                 TicketWindowUrl = new StreamReader(pathTicketWindowUrl).ReadLine();
                 TicketTerminal = new StreamReader(pathTicketTerminal).ReadLine();

@@ -55,6 +55,8 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         private BrowserWindow _customBrowser;
 
+        private BrowserWindow _presentationBrowser;
+
         /// <summary>
         /// Icono de barra de tareas, gestiona la salida del programa
         /// </summary>
@@ -67,10 +69,8 @@ namespace Lector.Sharp.Wpf
         {
             get
             {
-                if (_infoBrowser.IsClosed)
-                {
-                    _infoBrowser = new BrowserWindow();
-                }
+                if (_infoBrowser.IsClosed)        
+                    _infoBrowser = new BrowserWindow();                
                 return _infoBrowser;
             }
         }
@@ -82,14 +82,12 @@ namespace Lector.Sharp.Wpf
         {
             get
             {
-                if (_customBrowser.IsClosed)
-                {
-                    _customBrowser = new BrowserWindow();
-                }
+                if (_customBrowser.IsClosed)                
+                    _customBrowser = new BrowserWindow();                
                 return _customBrowser;
             }
         }
-
+        
         public MainWindow()
         {
             try
@@ -97,11 +95,14 @@ namespace Lector.Sharp.Wpf
                 RegisterStartup();
                 SupportHtml5();
                 InitializeComponent();
+
                 _service = new FarmaService();
                 _listener = new LowLevelKeyboardListener();
+                _window = new LowLevelWindowsListener();
+
                 _infoBrowser = new BrowserWindow();
                 _customBrowser = new BrowserWindow();
-                _window = new LowLevelWindowsListener();
+                _presentationBrowser = new BrowserWindow();
 
                 // Leemos los archivos de configuración
                 _service.LeerFicherosConfiguracion();
@@ -129,6 +130,8 @@ namespace Lector.Sharp.Wpf
                 menu.MenuItems.Add(notificationQuitMenu);
                 _iconNotification.ContextMenu = menu;
                 _iconNotification.Visible = true;
+
+                OpenWindowPresentation(_presentationBrowser, _service.Presentation);
             }
             catch (IOException ex)
             {
@@ -452,12 +455,26 @@ namespace Lector.Sharp.Wpf
         private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
 
+            if (!_presentationBrowser.IsClosed)            
+                _presentationBrowser.Close();
+            
             hidden.Topmost = false;
             browser.Topmost = true;
             hidden.Topmost = true;
             browser.Browser.Navigate(url);
             browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;            
+            browser.Show();
+            browser.Activate();
+        }
+
+        private void OpenWindowPresentation(BrowserWindow browser, string url)
+        {
+            browser.Topmost = true;
+            browser.WindowStyle = WindowStyle.None;
+            browser.Browser.Navigate(url);
+            browser.Visibility = Visibility.Visible;
+            browser.WindowState = WindowState.Maximized;
             browser.Show();
             browser.Activate();
         }
@@ -475,6 +492,6 @@ namespace Lector.Sharp.Wpf
         {
             // Utilizar SendWait para compatibilidad con WPF
             System.Windows.Forms.SendKeys.SendWait("{A}");
-        }
+        }        
     }
 }

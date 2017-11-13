@@ -8,19 +8,20 @@ using System.Threading.Tasks;
 
 namespace Lector.Sharp.Wpf.Models
 {
-    public partial class SisFarmaEntities : DbContext
+    public class TicketContext : DbContext
     {
-        public SisFarmaEntities(string server, string catalog) 
+        public TicketContext(string server, string catalog) 
             : base(BuildConnectionString(server, catalog))
-        {            
+        {
         }
 
         private static string BuildConnectionString(string dataSource, string database)
         {
             // Construcción de connectionString
-            var connectionString = $"server={dataSource};user id=fisiotes_fede;password=tGLjuIUr9A;persistsecurityinfo=True;database={database}; Allow Zero Datetime=True; Convert Zero Datetime=True";
+            var connectionString = $"server={dataSource};user id=admin;password=123456;persistsecurityinfo=True;database={database}; Allow Zero Datetime=True; Convert Zero Datetime=True";
+            //var connectionString = $"server={dataSource};user id=plector;password=Njmm_851;persistsecurityinfo=True;database={database}; Allow Zero Datetime=True; Convert Zero Datetime=True";
             var metadata = "res://*/Models.SisFarmaModel.csdl|res://*/Models.SisFarmaModel.ssdl|res://*/Models.SisFarmaModel.msl";
-            var provider = "MySql.Data.MySqlClient";            
+            var provider = "MySql.Data.MySqlClient";
 
             // Build the MetaData... feel free to copy/paste it from the connection string in the config file.
             EntityConnectionStringBuilder esb = new EntityConnectionStringBuilder();
@@ -33,5 +34,4 @@ namespace Lector.Sharp.Wpf.Models
             return str;
         }
     }
-    
 }

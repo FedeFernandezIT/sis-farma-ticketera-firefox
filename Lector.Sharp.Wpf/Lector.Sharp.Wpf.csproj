@@ -132,6 +132,8 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\WebBrowserExtensions.cs" />
     <Compile Include="LowLevelWindowsListener.cs" />
+    <Compile Include="Models\HoraMinutos.cs" />
+    <Compile Include="Models\ShutdownContext.cs" />
     <Compile Include="Models\SisFarmaContext.cs" />
     <Compile Include="Models\SisFarmaModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -148,6 +150,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SisFarmaModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\TicketContext.cs" />
+    <Compile Include="Models\Turno.cs" />
     <Compile Include="Services\FarmaService.cs" />
     <Compile Include="Services\TicketService.cs" />
     <Compile Include="TicketWindow.xaml.cs">

@@ -6,6 +6,8 @@ using Lector.Sharp.Wpf.Models;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.IO;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Lector.Sharp.Wpf.Services
 {
@@ -18,6 +20,8 @@ namespace Lector.Sharp.Wpf.Services
         public string UrlNavegar { get; set; }
         public string DatabaseServer { get; set; }
         public string DatabaseCatalog { get; set; }
+        public string ShutdownServer { get; set; }
+        public string ShutdownDatabase { get; set; }
 
         /// <summary>
         /// Lee los archivos de configuración y setea las propiedades correspondientes
@@ -43,7 +47,13 @@ namespace Lector.Sharp.Wpf.Services
                 // Único archivo que puede no existir
                 Mostrador = File.Exists(pathMostradorVc)
                     ? new StreamReader(pathMostradorVc).ReadLine()
-                    : "1";                
+                    : "1";
+
+                var pathShutdownServer = Path.Combine(pathBase, ConfigurationManager.AppSettings["Ticket.Server"]);
+                ShutdownServer = new StreamReader(pathShutdownServer).ReadLine();
+
+                var pathShutdownDatabase = Path.Combine(pathBase, ConfigurationManager.AppSettings["Ticket.Database"]);
+                ShutdownDatabase = new StreamReader(pathShutdownDatabase).ReadLine();
             } catch (IOException ex)
             {
                 throw new IOException("Error al leer archivos de configuración");                
@@ -258,6 +268,36 @@ namespace Lector.Sharp.Wpf.Services
                 var query = db.Database.SqlQuery<long>(sql, new MySqlParameter("@codNacional", codNacional)).ToArray();
                 return query.Length != 0 ? query[0].ToString() : null;
             }
+        }
+
+        public void CheckShutdownTime()
+        {
+            var now = DateTime.Now;
+            var horarios = GetTimesShutdown();
+            foreach (var horario in horarios)
+            {                
+                if (horario.Hora == now.Hour && horario.Minutos == now.Minute)
+                {
+                    Process.Start("shutdown", "/s /t 30");
+                    break;
+                }                    
+            }
+        }
+
+        private List<HoraMinutos> GetTimesShutdown()
+        {
+            try
+            {
+                using (var db = new ShutdownContext(ShutdownServer, ShutdownDatabase))
+                {
+                    var sql = @"select hora as Hora, minutos as Minutos from hora_apagado";
+                    return db.Database.SqlQuery<HoraMinutos>(sql).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                return new List<HoraMinutos>();
+            }            
         }
     
     }

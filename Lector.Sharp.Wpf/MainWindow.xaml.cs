@@ -17,6 +17,7 @@ using System.Deployment.Application;
 using Microsoft.Win32;
 using System.IO;
 using MySql.Data.MySqlClient;
+using System.Diagnostics;
 
 namespace Lector.Sharp.Wpf
 {
@@ -66,6 +67,9 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         private System.Windows.Forms.NotifyIcon _iconNotification;
 
+        private System.Timers.Timer _ticketPrinterTimer;
+        private System.Timers.Timer _shutdownTimer;
+
         /// <summary>
         /// Devuelve una ventana para mostrar info de la base de datos, si esta ya ce cerró devuelve una nueva
         /// </summary>
@@ -112,7 +116,7 @@ namespace Lector.Sharp.Wpf
 
                 _service = new FarmaService();
                 _ticketService = new TicketService();
-                
+
                 _listener = new LowLevelKeyboardListener();
                 _infoBrowser = new BrowserWindow();
                 _customBrowser = new BrowserWindow();
@@ -146,8 +150,9 @@ namespace Lector.Sharp.Wpf
                 menu.MenuItems.Add(notificationQuitMenu);
                 _iconNotification.ContextMenu = menu;
                 _iconNotification.Visible = true;
-
-                TicketBrowser.Show();
+                
+                InitializeTicketTimer();
+                InitializeShutdownTimer();
             }
             catch (IOException ex)
             {
@@ -155,6 +160,21 @@ namespace Lector.Sharp.Wpf
                 Application.Current.Shutdown();
             }
             
+        }
+
+        private void InitializeTicketTimer()
+        {
+            _ticketService.SetTicketsPrinted();
+            _ticketPrinterTimer = new System.Timers.Timer(1000);            
+            _ticketPrinterTimer.Elapsed += (o, e) => _ticketService.Print();                            
+            _ticketPrinterTimer.Start();
+        }
+
+        private void InitializeShutdownTimer()
+        {
+            _shutdownTimer = new System.Timers.Timer(60000);
+            _shutdownTimer.Elapsed += (o, e) => _service.CheckShutdownTime();
+            _shutdownTimer.Start();
         }
 
         /// <summary>
@@ -488,12 +508,6 @@ namespace Lector.Sharp.Wpf
         {
             // Utilizar SendWait para compatibilidad con WPF
             System.Windows.Forms.SendKeys.SendWait("{ENTER}");            
-        }
-
-        public static void SendKeyA()
-        {
-            // Utilizar SendWait para compatibilidad con WPF
-            System.Windows.Forms.SendKeys.SendWait("{A}");
-        }
+        }        
     }
 }

@@ -22,6 +22,7 @@ namespace Lector.Sharp.Wpf.Services
         public string DatabaseCatalog { get; set; }
         public string ShutdownServer { get; set; }
         public string ShutdownDatabase { get; set; }
+        public string Presentation { get; set; }
 
         /// <summary>
         /// Lee los archivos de configuración y setea las propiedades correspondientes
@@ -30,30 +31,30 @@ namespace Lector.Sharp.Wpf.Services
         {
             try
             {
-                var pathBase = ConfigurationManager.AppSettings["Sisfarma.Path.Base"];
-                var pathUrlInformacionRemoto = Path.Combine(pathBase,ConfigurationManager.AppSettings["Url.Informacion.Remoto"]);
-                var pathUrlMensajesRemoto = Path.Combine(pathBase, ConfigurationManager.AppSettings["Url.Mensajes.Remoto"]);
-                var pathUrlCustom = Path.Combine(pathBase, ConfigurationManager.AppSettings["Url.Custom"]);
-                var pathMostradorVc = Path.Combine(pathBase,ConfigurationManager.AppSettings["Mostrador.Vc"]);
-                var pathDatabaseServer = Path.Combine(pathBase, ConfigurationManager.AppSettings["Database.Server"]);
-                var pathDatabseCatalog = Path.Combine(pathBase, ConfigurationManager.AppSettings["Database.Catalog"]);
+                var dir = ConfigurationManager.AppSettings["Directory.Setup"];
 
+                var pathPresentation = Path.Combine(dir, ConfigurationManager.AppSettings["Presentation.Url"]);
+                Presentation = new StreamReader(pathPresentation).ReadLine();
+
+                var pathUrlInformacionRemoto = Path.Combine(dir, ConfigurationManager.AppSettings["Url.Informacion.Remoto"]);
                 Url = new StreamReader(pathUrlInformacionRemoto).ReadLine();
+
+                var pathUrlMensajesRemoto = Path.Combine(dir, ConfigurationManager.AppSettings["Url.Mensajes.Remoto"]);
                 UrlMensajes = new StreamReader(pathUrlMensajesRemoto).ReadLine();
+
+                var pathUrlCustom = Path.Combine(dir, ConfigurationManager.AppSettings["Url.Custom"]);
                 UrlNavegarCustom = new StreamReader(pathUrlCustom).ReadLine();
+                
+                var pathDatabaseServer = Path.Combine(dir, ConfigurationManager.AppSettings["Database.Server"]);
                 DatabaseServer = new StreamReader(pathDatabaseServer).ReadLine();
+
+                var pathDatabseCatalog = Path.Combine(dir, ConfigurationManager.AppSettings["Database.Catalog"]);
                 DatabaseCatalog = new StreamReader(pathDatabseCatalog).ReadLine();
 
                 // Único archivo que puede no existir
-                Mostrador = File.Exists(pathMostradorVc)
-                    ? new StreamReader(pathMostradorVc).ReadLine()
-                    : "1";
+                var pathMostradorVc = Path.Combine(dir, ConfigurationManager.AppSettings["Mostrador.Vc"]);                                
+                Mostrador = File.Exists(pathMostradorVc) ? new StreamReader(pathMostradorVc).ReadLine() : "1";                
 
-                var pathShutdownServer = Path.Combine(pathBase, ConfigurationManager.AppSettings["Ticket.Server"]);
-                ShutdownServer = new StreamReader(pathShutdownServer).ReadLine();
-
-                var pathShutdownDatabase = Path.Combine(pathBase, ConfigurationManager.AppSettings["Ticket.Database"]);
-                ShutdownDatabase = new StreamReader(pathShutdownDatabase).ReadLine();
             } catch (IOException ex)
             {
                 throw new IOException("Error al leer archivos de configuración");                

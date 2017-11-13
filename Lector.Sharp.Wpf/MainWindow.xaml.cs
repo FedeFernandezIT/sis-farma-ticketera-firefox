@@ -57,11 +57,8 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         private BrowserWindow _customBrowser;
 
-        /// <summary>
-        /// Window para mostrar una url personaliza y los datos de imprsión de turnos
-        /// </summary>
-        private TicketWindow _ticketWindow;
-
+        private BrowserWindow _presentationBrowser;
+        
         /// <summary>
         /// Icono de barra de tareas, gestiona la salida del programa
         /// </summary>
@@ -95,17 +92,7 @@ namespace Lector.Sharp.Wpf
                 return _customBrowser;
             }
         }
-
-        public TicketWindow TicketBrowser
-        {
-            get
-            {
-                if (_ticketWindow.IsClosed)
-                    _ticketWindow = new TicketWindow();
-                return _ticketWindow;
-            }
-        }
-
+        
         public MainWindow()
         {
             try
@@ -118,10 +105,12 @@ namespace Lector.Sharp.Wpf
                 _ticketService = new TicketService();
 
                 _listener = new LowLevelKeyboardListener();
+                _window = new LowLevelWindowsListener();
+
                 _infoBrowser = new BrowserWindow();
                 _customBrowser = new BrowserWindow();
-                _ticketWindow = new TicketWindow();
-                _window = new LowLevelWindowsListener();
+                _presentationBrowser = new BrowserWindow();        
+                
 
                 // Leemos los archivos de configuración
                 _service.LeerFicherosConfiguracion();
@@ -153,6 +142,8 @@ namespace Lector.Sharp.Wpf
                 
                 InitializeTicketTimer();
                 InitializeShutdownTimer();
+
+                OpenWindowPresentation(_presentationBrowser, _service.Presentation);
             }
             catch (IOException ex)
             {
@@ -491,12 +482,26 @@ namespace Lector.Sharp.Wpf
         private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
 
+            if (!_presentationBrowser.IsClosed)            
+                _presentationBrowser.Close();
+            
             hidden.Topmost = false;
             browser.Topmost = true;
             hidden.Topmost = true;
             browser.Browser.Navigate(url);
             browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;            
+            browser.Show();
+            browser.Activate();
+        }
+
+        private void OpenWindowPresentation(BrowserWindow browser, string url)
+        {
+            browser.Topmost = true;
+            browser.WindowStyle = WindowStyle.None;
+            browser.Browser.Navigate(url);
+            browser.Visibility = Visibility.Visible;
+            browser.WindowState = WindowState.Maximized;
             browser.Show();
             browser.Activate();
         }
@@ -508,6 +513,7 @@ namespace Lector.Sharp.Wpf
         {
             // Utilizar SendWait para compatibilidad con WPF
             System.Windows.Forms.SendKeys.SendWait("{ENTER}");            
-        }        
+        }
+        
     }
 }

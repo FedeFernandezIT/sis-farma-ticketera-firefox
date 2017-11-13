@@ -122,7 +122,12 @@ namespace Lector.Sharp.Wpf.Services
         {            
             using (var sf = new StringFormat())
             {
-                sf.Alignment = alignment;                
+                sf.Alignment = alignment;
+                var family = font.FontFamily;
+                var linespacing = family.GetLineSpacing(font.Style);
+                var ascent = family.GetCellAscent(font.Style);
+                var descent = family.GetCellDescent(font.Style);
+                var baseline = font.GetHeight(e.Graphics) * ascent / linespacing;
                 var size = e.Graphics.MeasureString(text, font, e.MarginBounds.Size);
                 e.Graphics.DrawString(text, font, Brushes.Black, new PointF(e.MarginBounds.Left + e.MarginBounds.Width / 2, currentY), sf);
                 currentY += size.Height;

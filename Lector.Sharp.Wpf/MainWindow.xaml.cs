@@ -157,7 +157,7 @@ namespace Lector.Sharp.Wpf
         {
             _ticketService.SetTicketsPrinted();
             _ticketPrinterTimer = new System.Timers.Timer(1000);            
-            _ticketPrinterTimer.Elapsed += (o, e) => _ticketService.Print();                            
+            _ticketPrinterTimer.Elapsed += (o, e) => _ticketService.Print();            
             _ticketPrinterTimer.Start();
         }
 
@@ -182,7 +182,7 @@ namespace Lector.Sharp.Wpf
         private void SupportHtml5()
         {
             RegistryKey reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
-            reg.SetValue("Lector.Sharp.Wpf.exe", 9999, RegistryValueKind.DWord);
+            reg.SetValue("Lector.Sharp.Wpf.exe", 11001, RegistryValueKind.DWord);
         }
 
         /// <summary>

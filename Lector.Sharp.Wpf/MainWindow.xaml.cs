@@ -228,6 +228,9 @@ namespace Lector.Sharp.Wpf
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
+                        if (!_presentationBrowser.IsClosed)
+                            _presentationBrowser.Close();
+
                         // Cerramos la ventana con la web personalizada
                         CloseWindowBrowser(CustomBrowser);
                     }

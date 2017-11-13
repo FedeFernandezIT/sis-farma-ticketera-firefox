@@ -23,8 +23,8 @@ namespace Lector.Sharp.Wpf.Services
         {
             try
             {
-                var dir = ConfigurationManager.AppSettings["Sisfarma.Path.Base"];
-                
+                var dir = ConfigurationManager.AppSettings["Directory.Setup"];
+
                 var pathTicketTerminal = Path.Combine(dir, ConfigurationManager.AppSettings["Ticket.Terminal"]);
                 TicketTerminal = new StreamReader(pathTicketTerminal).ReadLine();
 
@@ -51,7 +51,8 @@ namespace Lector.Sharp.Wpf.Services
                 }
             }
             catch (Exception)
-            {                
+            {
+                Task.Delay(500).Wait();
             }            
         }
 
@@ -72,9 +73,14 @@ namespace Lector.Sharp.Wpf.Services
 
                     }
                 }
+                //var turno = Turno.GetMock();
+                //var printer = new PrintDocument();
+                //printer.PrintPage += (sender, e) => PrintPage(sender, e, turno);
+                //printer.Print();
             }
             catch (Exception)
             {
+                Task.Delay(500).Wait();
             }            
         }
 
@@ -82,8 +88,8 @@ namespace Lector.Sharp.Wpf.Services
         {                        
             var currentY = Convert.ToSingle(e.MarginBounds.Top);
 
-            var text = "****************************************************************************************************************************************************";
-            PrintBlock(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), ref currentY);            
+            var text = "*****************************************************";
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
 
             text = turno.IdTurno;
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 20f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
@@ -92,11 +98,11 @@ namespace Lector.Sharp.Wpf.Services
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
 
             text = turno.Letra + turno.Numero;
-            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 50f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 50f, FontStyle.Bold), StringAlignment.Center, ref currentY);
 
-            text = "****************************************************************************************************************************************************";
-            PrintBlock(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), ref currentY);
-            
+            text = "*****************************************************";
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), StringAlignment.Center, ref currentY);
+
             text = "Por favor espere su turno";
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);
             

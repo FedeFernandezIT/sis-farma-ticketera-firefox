@@ -89,7 +89,7 @@ namespace Lector.Sharp.Wpf.Services
             var currentY = Convert.ToSingle(e.MarginBounds.Top);
 
             var text = "*****************************************************";
-            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
 
             text = turno.IdTurno;
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 20f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
@@ -101,7 +101,7 @@ namespace Lector.Sharp.Wpf.Services
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 50f, FontStyle.Bold), StringAlignment.Center, ref currentY);
 
             text = "*****************************************************";
-            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 15f, FontStyle.Bold), StringAlignment.Center, ref currentY);
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);
 
             text = "Por favor espere su turno";
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);
@@ -110,7 +110,7 @@ namespace Lector.Sharp.Wpf.Services
             PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);
             
             text = "_____________________________________________________";
-            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 10f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
+            PrintLine(text, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);            
 
             foreach (var item in turno.Textos)
             {
@@ -123,14 +123,14 @@ namespace Lector.Sharp.Wpf.Services
             using (var sf = new StringFormat())
             {
                 sf.Alignment = alignment;
-                var family = font.FontFamily;
-                var linespacing = family.GetLineSpacing(font.Style);
-                var ascent = family.GetCellAscent(font.Style);
-                var descent = family.GetCellDescent(font.Style);
-                var baseline = font.GetHeight(e.Graphics) * ascent / linespacing;
+                //var family = font.FontFamily;
+                //var linespacing = family.GetLineSpacing(font.Style);
+                //var ascent = family.GetCellAscent(font.Style);
+                //var baseline = font.GetHeight(e.Graphics) * ascent / linespacing;
                 var size = e.Graphics.MeasureString(text, font, e.MarginBounds.Size);
                 e.Graphics.DrawString(text, font, Brushes.Black, new PointF(e.MarginBounds.Left + e.MarginBounds.Width / 2, currentY), sf);
-                currentY += size.Height;
+                //currentY += size.Height - baseline;
+                currentY += font.GetHeight(e.Graphics);
             }
         }
 

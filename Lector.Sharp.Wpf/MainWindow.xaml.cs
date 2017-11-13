@@ -156,7 +156,8 @@ namespace Lector.Sharp.Wpf
         private void InitializeTicketTimer()
         {
             _ticketService.SetTicketsPrinted();
-            _ticketPrinterTimer = new System.Timers.Timer(1000);            
+            _ticketPrinterTimer = new System.Timers.Timer(1000);
+            //_ticketPrinterTimer.AutoReset = false;
             _ticketPrinterTimer.Elapsed += (o, e) => _ticketService.Print();            
             _ticketPrinterTimer.Start();
         }

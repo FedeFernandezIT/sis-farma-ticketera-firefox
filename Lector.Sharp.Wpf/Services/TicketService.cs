@@ -14,10 +14,17 @@ namespace Lector.Sharp.Wpf.Services
 {    
 
     public class TicketService
-    {        
+    {
+        private PrintDocument _printer;
+
         public string TicketTerminal { get; set; }
         public string TicketServer { get; set; }
         public string TicketDatabase { get; set; }
+
+        public TicketService()
+        {
+            _printer = new PrintDocument();
+        }
 
         public void InitializeConfiguration()
         {
@@ -66,10 +73,9 @@ namespace Lector.Sharp.Wpf.Services
                     if (turno != null)
                     {
                         UpdateTurnToPrinted(db, turno.IdTurno);
-                        turno.Textos = GetTextsVisbleFromTickets(db);
-                        var printer = new PrintDocument();
-                        printer.PrintPage += (sender, e) => PrintPage(sender, e, turno);
-                        printer.Print();
+                        turno.Textos = GetTextsVisbleFromTickets(db);                        
+                        _printer.PrintPage += (sender, e) => PrintPage(sender, e, turno);
+                        _printer.Print();
 
                     }
                 }

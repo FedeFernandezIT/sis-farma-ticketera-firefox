@@ -15,7 +15,7 @@ namespace Lector.Sharp.Wpf.Services
 
     public class TicketService
     {
-        private PrintDocument _printer;
+        //private PrintDocument _printer;
 
         public string TicketTerminal { get; set; }
         public string TicketServer { get; set; }
@@ -23,7 +23,7 @@ namespace Lector.Sharp.Wpf.Services
 
         public TicketService()
         {
-            _printer = new PrintDocument();
+            //_printer = new PrintDocument();
         }
 
         public void InitializeConfiguration()
@@ -73,9 +73,10 @@ namespace Lector.Sharp.Wpf.Services
                     if (turno != null)
                     {
                         UpdateTurnToPrinted(db, turno.IdTurno);
-                        turno.Textos = GetTextsVisbleFromTickets(db);                        
-                        _printer.PrintPage += (sender, e) => PrintPage(sender, e, turno);
-                        _printer.Print();
+                        turno.Textos = GetTextsVisbleFromTickets(db);
+                        var printer = new PrintDocument();
+                        printer.PrintPage += (sender, e) => PrintPage(sender, e, turno);
+                        printer.Print();
 
                     }
                 }
@@ -122,6 +123,8 @@ namespace Lector.Sharp.Wpf.Services
             {
                 PrintLine(item, e, new Font(FontFamily.GenericSansSerif, 9f, FontStyle.Bold), StringAlignment.Center, ref currentY);                
             }
+
+            e.HasMorePages = false;
         }
 
         private void PrintLine(string text, PrintPageEventArgs e, Font font, StringAlignment alignment, ref float currentY)

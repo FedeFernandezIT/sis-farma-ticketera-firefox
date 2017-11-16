@@ -159,16 +159,8 @@ namespace Lector.Sharp.Wpf
             _ticketPrinterTimer = new System.Timers.Timer(1000);
             //_ticketPrinterTimer.AutoReset = false;
             _ticketPrinterTimer.Elapsed += (o, e) =>
-            {
-                Task.Run(() => _ticketService.Print());
-                //_ticketService.Print();
-                //Task.Run(() => _ticketService.PrintInside());
-                //_ticketService.PrintInside();
-                //Task.Run(() => _ticketService.PrintWithVb6());
-                //_ticketService.PrintWithVb6();
-                //Task.Run(() => _ticketService.PrintInsideWithVb6());
-                //_ticketService.PrintInsideWithVb6();
-                //Task.Run(() => _ticketService.PrintPos());
+            {                
+                Task.Run(() => _ticketService.PrintInside());                
             };
             _ticketPrinterTimer.Start();
         }

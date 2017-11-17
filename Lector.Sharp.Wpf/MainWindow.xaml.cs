@@ -18,6 +18,9 @@ using Microsoft.Win32;
 using System.IO;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
+using System.Threading;
+using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
 namespace Lector.Sharp.Wpf
 {
@@ -26,6 +29,22 @@ namespace Lector.Sharp.Wpf
     /// </summary>
     public partial class MainWindow : Window
     {
+        [DllImport("User32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+        static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        const UInt32 SWP_NOSIZE = 0x0001;
+        const UInt32 SWP_NOMOVE = 0x0002;
+        const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+
+        [DllImport("user32.dll")]
+        static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+
         /// <summary>
         /// Listener que escucha cada vez que se presiona una tecla.       
         /// </summary>
@@ -58,7 +77,7 @@ namespace Lector.Sharp.Wpf
         private BrowserWindow _customBrowser;
 
         private BrowserWindow _presentationBrowser;
-        
+                
         /// <summary>
         /// Icono de barra de tareas, gestiona la salida del programa
         /// </summary>
@@ -92,6 +111,8 @@ namespace Lector.Sharp.Wpf
                 return _customBrowser;
             }
         }
+
+        private Process _processChrome;
         
         public MainWindow()
         {
@@ -109,8 +130,7 @@ namespace Lector.Sharp.Wpf
 
                 _infoBrowser = new BrowserWindow();
                 _customBrowser = new BrowserWindow();
-                _presentationBrowser = new BrowserWindow();        
-                
+                _presentationBrowser = new BrowserWindow();                
 
                 // Leemos los archivos de configuración
                 _service.LeerFicherosConfiguracion();
@@ -139,11 +159,22 @@ namespace Lector.Sharp.Wpf
                 menu.MenuItems.Add(notificationQuitMenu);
                 _iconNotification.ContextMenu = menu;
                 _iconNotification.Visible = true;
-                
+
                 InitializeTicketTimer();
                 InitializeShutdownTimer();
 
-                OpenWindowPresentation(_presentationBrowser, _service.Presentation);
+                //OpenWindowPresentation(_presentationBrowser, "http://www.google.com.ar");                
+
+                _processChrome = new Process();                
+                _processChrome.StartInfo.FileName = @"chrome.exe";
+                _processChrome.StartInfo.Arguments = $@"--kiosk --fullscreen --app={_service.Presentation}";                
+                _processChrome.Start();
+                _processChrome.WaitForInputIdle(1000);
+                _processChrome.Refresh();
+                SetParent(_processChrome.MainWindowHandle, new WindowInteropHelper(this).Handle);                
+                SetWindowPos(_processChrome.MainWindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+                SetForegroundWindow(_processChrome.Handle);
+                _processChrome.Refresh();
             }
             catch (IOException ex)
             {
@@ -232,8 +263,12 @@ namespace Lector.Sharp.Wpf
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
-                        if (!_presentationBrowser.IsClosed)
-                            _presentationBrowser.Close();
+                        if (_processChrome != null && !_processChrome.HasExited)
+                        {
+                            _processChrome.CloseMainWindow();
+                            _processChrome.Close();
+                            _processChrome = null;
+                        }
 
                         // Cerramos la ventana con la web personalizada
                         CloseWindowBrowser(CustomBrowser);
@@ -488,9 +523,13 @@ namespace Lector.Sharp.Wpf
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
-
-            if (!_presentationBrowser.IsClosed)            
-                _presentationBrowser.Close();
+            
+            if (_processChrome != null && !_processChrome.HasExited)
+            {
+                _processChrome.CloseMainWindow();
+                _processChrome.Close();
+                _processChrome = null;
+            }              
             
             hidden.Topmost = false;
             browser.Topmost = true;

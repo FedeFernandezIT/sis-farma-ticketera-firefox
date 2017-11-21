@@ -117,11 +117,9 @@ namespace Lector.Sharp.Wpf
         public MainWindow()
         {
             try
-            {
-                RegisterStartup();
-                SupportHtml5();
+            {                        
                 InitializeComponent();
-
+                
                 _service = new FarmaService();
                 _ticketService = new TicketService();
 
@@ -203,23 +201,7 @@ namespace Lector.Sharp.Wpf
             _shutdownTimer.Start();
         }
 
-        /// <summary>
-        /// Registra la aplicación en el Registro de sistema para que arranque junto al sistema.
-        /// </summary>
-        private void RegisterStartup()
-        {           
-            RegistryKey reg =
-                Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
-            reg.SetValue("SisFarma Lector", System.Reflection.Assembly.GetExecutingAssembly().Location);
-            //MessageBox.Show("Startup success", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
-        private void SupportHtml5()
-        {
-            RegistryKey reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true);
-            reg.SetValue("Lector.Sharp.Wpf.exe", 11001, RegistryValueKind.DWord);
-        }
-
+                        
         /// <summary>
         /// Acción para salir del programa.
         /// </summary>

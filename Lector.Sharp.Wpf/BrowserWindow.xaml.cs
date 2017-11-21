@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Lector.Sharp.Wpf.Extensions;
+using Gecko;
+using System.Windows.Forms.Integration;
 
 namespace Lector.Sharp.Wpf
 {
@@ -29,17 +31,24 @@ namespace Lector.Sharp.Wpf
             get { return _closed; }
         }
 
+        public string NavigateUrl { get; set; }
+
         public BrowserWindow()
         {
             _windows = new LowLevelWindowsListener();
             _closed = false;
-            InitializeComponent();            
+            InitializeComponent();
+            Xpcom.Initialize("Firefox");
         }
 
         private void winBrowser_Loaded(object sender, RoutedEventArgs e)
         {
             ColocarEnTop(true);
-            Browser.SuppressScriptErrors(true);
+            WindowsFormsHost host = new WindowsFormsHost();
+            GeckoWebBrowser browser = new GeckoWebBrowser();
+            host.Child = browser;
+            GridWeb.Children.Add(host);
+            browser.Navigate(NavigateUrl);            
         }
 
         private void winBrowser_Unloaded(object sender, RoutedEventArgs e)

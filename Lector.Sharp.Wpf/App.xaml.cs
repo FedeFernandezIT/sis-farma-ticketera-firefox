@@ -26,9 +26,9 @@ namespace Lector.Sharp.Wpf
         {
             try
             {                
-                var clickOnce = new ClickOnceHelper(Globals.PublisherName, Globals.ProductName);
-                clickOnce.UpdateUninstallParameters();            
-                SupportHtml5();
+                var clickOnce = new ClickOnceHelper(Globals.PublisherName, Globals.ProductName);                
+                clickOnce.UpdateUninstallParameters();
+                RegisterStartup(clickOnce.ProductName);
                 base.OnStartup(e);
             }
             catch (Exception ex)
@@ -44,25 +44,6 @@ namespace Lector.Sharp.Wpf
             RegistryKey reg = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);            
             reg.SetValue(productName, Assembly.GetExecutingAssembly().Location);
         }
-
-        private void SupportHtml5()
-        {
-            var fileExcecutable = Path.GetFileName(Assembly.GetEntryAssembly().Location);
-            RegistryKey reg = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true);
-            reg.SetValue(fileExcecutable, 11001, RegistryValueKind.DWord);
-        }
-
-        private void RemoveSupportHtml5()
-        {
-            var fileExcecutable = Path.GetFileName(Assembly.GetEntryAssembly().Location);
-            RegistryKey reg = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION", true);
-            reg.DeleteValue(fileExcecutable);
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {                     
-            RemoveSupportHtml5();         
-            base.OnExit(e);
-        }        
+                        
     }
 }

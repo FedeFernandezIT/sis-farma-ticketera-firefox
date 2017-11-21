@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Threading;
+using System.Windows;
 
 namespace Lector.Sharp.ClickOnce
 {
@@ -28,7 +29,7 @@ namespace Lector.Sharp.ClickOnce
         public string UninstallFile { get; private set; }
 
         public ClickOnceHelper(string publisher, string product)
-        {
+        {            
             PublisherName = publisher;
             ProductName = product;            
 
@@ -60,7 +61,7 @@ namespace Lector.Sharp.ClickOnce
         }
 
         public void UpdateUninstallParameters()
-        {
+        {            
             if (UninstallRegistryKey == null)
                 return;
             var uninstallString = (string)UninstallRegistryKey.GetValue(UninstallString);            

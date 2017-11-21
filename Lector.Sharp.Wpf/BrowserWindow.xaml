@@ -5,8 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Información" Loaded="winBrowser_Loaded" Unloaded="winBrowser_Unloaded" WindowStartupLocation="CenterScreen" Closed="winBrowser_Closed" Icon="sisfarma-logo.ico" WindowStyle="ToolWindow" SourceInitialized="WinBrowser_SourceInitialized" ResizeMode="NoResize" WindowState="Maximized">
-    <Grid>
-        <WebBrowser x:Name="Browser"/>
-
+    <Grid Name="GridWeb" Loaded="winBrowser_Loaded">
     </Grid>
 </Window>

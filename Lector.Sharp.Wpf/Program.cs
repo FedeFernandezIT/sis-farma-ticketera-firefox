@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Lector.Sharp.Wpf
 {
@@ -15,17 +16,17 @@ namespace Lector.Sharp.Wpf
 
         [STAThread]
         static void Main(string[] args)
-        {
+        {            
             try
             {
                 bool createdNew;
                 instanceMutex = new Mutex(true, @"Local\" + Assembly.GetExecutingAssembly().GetType().GUID, out createdNew);
                 if (!createdNew)
                 {
-                    instanceMutex = null;
+                    instanceMutex = null;         
                     return;
-                }
-                App.Main();
+                }                
+                App.Main();                
                 instanceMutex.ReleaseMutex();                
             }
             catch (Exception e)

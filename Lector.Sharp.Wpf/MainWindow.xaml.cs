@@ -111,23 +111,21 @@ namespace Lector.Sharp.Wpf
                 return _customBrowser;
             }
         }
-
-        private Process _processChrome;
-        
+                
         public MainWindow()
         {
             try
-            {                        
-                InitializeComponent();
+            {                
+                InitializeComponent();             
                 
                 _service = new FarmaService();
                 _ticketService = new TicketService();
 
                 _listener = new LowLevelKeyboardListener();
                 _window = new LowLevelWindowsListener();
-
+                
                 _infoBrowser = new BrowserWindow();
-                _customBrowser = new BrowserWindow();
+                _customBrowser = new BrowserWindow();                
                 _presentationBrowser = new BrowserWindow();                
 
                 // Leemos los archivos de configuración
@@ -160,26 +158,14 @@ namespace Lector.Sharp.Wpf
 
                 InitializeTicketTimer();
                 InitializeShutdownTimer();
-
-                //OpenWindowPresentation(_presentationBrowser, "http://www.google.com.ar");                
-
-                _processChrome = new Process();                
-                _processChrome.StartInfo.FileName = @"chrome.exe";
-                _processChrome.StartInfo.Arguments = $@"--kiosk --fullscreen --app={_service.Presentation}";                
-                _processChrome.Start();
-                _processChrome.WaitForInputIdle(1000);
-                _processChrome.Refresh();
-                SetParent(_processChrome.MainWindowHandle, new WindowInteropHelper(this).Handle);                
-                SetWindowPos(_processChrome.MainWindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-                SetForegroundWindow(_processChrome.Handle);
-                _processChrome.Refresh();
+                
+                OpenWindowPresentation(_presentationBrowser, _service.Presentation);
             }
             catch (IOException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 Application.Current.Shutdown();
-            }
-            
+            }                        
         }
 
         private void InitializeTicketTimer()
@@ -239,19 +225,18 @@ namespace Lector.Sharp.Wpf
                     {   // Si La ventana de información detallada está abierta la cerramos
                         if (InfoBrowser.IsVisible)
                             CloseWindowBrowser(InfoBrowser);
+                        if (_presentationBrowser.IsVisible)
+                            CloseWindowBrowser(_presentationBrowser);
+
+                        
                         // Abrimos una ventana con la web personalizada.    
                         OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom, InfoBrowser);
                     }
                     // Si presionamos SHIFT + F2
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
-                        if (_processChrome != null && !_processChrome.HasExited)
-                        {
-                            _processChrome.CloseMainWindow();
-                            _processChrome.Close();
-                            _processChrome = null;
-                        }
-
+                        if (_presentationBrowser.IsVisible)
+                            CloseWindowBrowser(_presentationBrowser);
                         // Cerramos la ventana con la web personalizada
                         CloseWindowBrowser(CustomBrowser);
                     }
@@ -505,18 +490,11 @@ namespace Lector.Sharp.Wpf
         /// <param name="browser">Ventana con un browser</param>
         private void OpenWindowBrowser(BrowserWindow browser, string url, BrowserWindow hidden)
         {
-            
-            if (_processChrome != null && !_processChrome.HasExited)
-            {
-                _processChrome.CloseMainWindow();
-                _processChrome.Close();
-                _processChrome = null;
-            }              
-            
+
             hidden.Topmost = false;
             browser.Topmost = true;
             hidden.Topmost = true;
-            browser.Browser.Navigate(url);
+            browser.NavigateUrl = url;
             browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;            
             browser.Show();
@@ -527,7 +505,7 @@ namespace Lector.Sharp.Wpf
         {
             browser.Topmost = true;
             browser.WindowStyle = WindowStyle.None;
-            browser.Browser.Navigate(url);
+            browser.NavigateUrl = url;
             browser.Visibility = Visibility.Visible;
             browser.WindowState = WindowState.Maximized;
             browser.Show();

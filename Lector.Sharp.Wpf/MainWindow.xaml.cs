@@ -226,8 +226,7 @@ namespace Lector.Sharp.Wpf
                         if (InfoBrowser.IsVisible)
                             CloseWindowBrowser(InfoBrowser);
                         if (_presentationBrowser.IsVisible)
-                            CloseWindowBrowser(_presentationBrowser);
-
+                            SystemCommands.CloseWindow(_presentationBrowser);                        
                         
                         // Abrimos una ventana con la web personalizada.    
                         OpenWindowBrowser(CustomBrowser, _service.UrlNavegarCustom, InfoBrowser);
@@ -236,7 +235,7 @@ namespace Lector.Sharp.Wpf
                     else if (_listener.IsHardwareKeyDown(LowLevelKeyboardListener.VirtualKeyStates.VK_SHIFT) && e.KeyPressed == Key.F2)
                     {
                         if (_presentationBrowser.IsVisible)
-                            CloseWindowBrowser(_presentationBrowser);
+                            SystemCommands.CloseWindow(_presentationBrowser);
                         // Cerramos la ventana con la web personalizada
                         CloseWindowBrowser(CustomBrowser);
                     }
@@ -480,8 +479,8 @@ namespace Lector.Sharp.Wpf
         /// </summary>
         /// <param name="browser"></param>
         private void CloseWindowBrowser(BrowserWindow browser)
-        {            
-            SystemCommands.CloseWindow(browser);
+        {
+            browser.Hide();
         }
 
         /// <summary>
